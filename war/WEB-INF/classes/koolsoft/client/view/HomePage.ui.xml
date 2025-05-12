@@ -1,0 +1,31 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:c='urn:import:com.google.gwt.user.cellview.client'>
+
+  <g:VerticalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER">
+	
+    <!-- Search Section -->
+    <g:HorizontalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER"  verticalAlignment="middle" styleName="search-panel">
+      	<g:TextBox ui:field="searchBox"  width="200px"/>
+      	<g:Button ui:field="searchButton" text="Search" styleName="btn btn-sm btn-info"/>
+    </g:HorizontalPanel>
+    
+    <g:HorizontalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER"  verticalAlignment="middle" >
+     	 <g:Label ui:field="errorLabel"  />
+    </g:HorizontalPanel>
+
+    <!-- Action Buttons Section -->
+    <g:HorizontalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER"  verticalAlignment="middle" styleName="action-panel">
+      	<g:Button ui:field="addContactButton" text="Add Contact" styleName="btn btn-sm btn-success"/>
+      	<g:Button ui:field="updateContactButton" text="Update Contact" styleName="btn btn-sm btn-warning"/>
+     	 <g:Button ui:field="deleteContactButton" text="Delete Contact" styleName="btn btn-sm btn-danger"/>
+    </g:HorizontalPanel>
+
+    <!-- Table Section -->
+    <g:VerticalPanel width="100%" spacing="10" horizontalAlignment="ALIGN_CENTER"  verticalAlignment="middle">
+      	<c:CellTable ui:field="contactTable" width="80%" styleName="table table-bordered table-hover"/>
+    </g:VerticalPanel>
+
+  </g:VerticalPanel>
+
+</ui:UiBinder>
