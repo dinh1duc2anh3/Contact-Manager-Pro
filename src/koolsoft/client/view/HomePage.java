@@ -29,20 +29,23 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 
-import koolsoft.client.enums.ActionType;
 import koolsoft.client.service.GreetingService;
 import koolsoft.client.service.GreetingServiceAsync;
-import koolsoft.shared.ContactInfoDTO;
+import koolsoft.shared.ContactInfo;
 import koolsoft.shared.FieldVerifier;
+import koolsoft.shared.enums.ActionType;
+import koolsoft.shared.enums.SearchValidationResult;
+import koolsoft.shared.exception.ContactAlreadyExistsException;
+import koolsoft.shared.exception.ContactNoneExistsException;
 
 public class HomePage extends Composite {
 	interface HomePageUiBinder extends UiBinder<Widget, HomePage> {}
     private static HomePageUiBinder uiBinder = GWT.create(HomePageUiBinder.class);
 	
-	private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
+	private GreetingServiceAsync greetingService = null;
 	
-	private Set<ContactInfoDTO> selectedContacts = null;
-	private ContactInfoDTO selectedContact = null;
+	private Set<ContactInfo> selectedContacts = null;
+	private ContactInfo selectedContact = null;
 	
     @UiField
     TextBox searchBox;
@@ -60,18 +63,20 @@ public class HomePage extends Composite {
     Button deleteContactButton;
 
     @UiField
-    CellTable<ContactInfoDTO> contactTable;
+    CellTable<ContactInfo> contactTable;
     
     @UiField
     Label errorLabel;
 
-    private static ListDataProvider<ContactInfoDTO> dataProvider = new ListDataProvider<>();
+    private static ListDataProvider<ContactInfo> dataProvider = new ListDataProvider<>();
     
-    private MultiSelectionModel<ContactInfoDTO> multiSelectionModel = new MultiSelectionModel<>();
+    private MultiSelectionModel<ContactInfo> multiSelectionModel = new MultiSelectionModel<>();
 
     
-    public HomePage() {
+    public HomePage(GreetingServiceAsync greetingService) {
+    	
     	initWidget(uiBinder.createAndBindUi(this));
+    	this.greetingService = greetingService;
 
         setupUI();
         setupHandlers();
@@ -97,63 +102,64 @@ public class HomePage extends Composite {
     }
     
     private void setupContactTable() {
-        contactTable.setSelectionModel(multiSelectionModel, DefaultSelectionEventManager.<ContactInfoDTO>createCheckboxManager());
+        contactTable.setSelectionModel(multiSelectionModel, DefaultSelectionEventManager.<ContactInfo>createCheckboxManager());
         contactTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 
 
         dataProvider.addDataDisplay(contactTable);
 
         // Column: Checkbox
-        Column<ContactInfoDTO, Boolean> checkColumn = new Column<ContactInfoDTO, Boolean>(new CheckboxCell(true, false)) {
+        Column<ContactInfo, Boolean> checkColumn = new Column<ContactInfo, Boolean>(new CheckboxCell(true, false)) {
             @Override
-            public Boolean getValue(ContactInfoDTO object) {
+            public Boolean getValue(ContactInfo object) {
                 return multiSelectionModel.isSelected(object);
             }
         };
         contactTable.addColumn(checkColumn, "CheckBox");
 
         // Column: First Name
-        TextColumn<ContactInfoDTO> firstNameColumn = new TextColumn<ContactInfoDTO>() {
+        TextColumn<ContactInfo> firstNameColumn = new TextColumn<ContactInfo>() {
             @Override
-            public String getValue(ContactInfoDTO object) {
+            public String getValue(ContactInfo object) {
                 return object.getFirstName();
             }
         };
         contactTable.addColumn(firstNameColumn, "First Name");
 
         // Column: Last Name
-        TextColumn<ContactInfoDTO> lastNameColumn = new TextColumn<ContactInfoDTO>() {
+        TextColumn<ContactInfo> lastNameColumn = new TextColumn<ContactInfo>() {
             @Override
-            public String getValue(ContactInfoDTO object) {
+            public String getValue(ContactInfo object) {
                 return object.getLastName();
             }
         };
         contactTable.addColumn(lastNameColumn, "Last Name");
 
         // Column: Phone Number
-        TextColumn<ContactInfoDTO> phoneNumberColumn = new TextColumn<ContactInfoDTO>() {
+        TextColumn<ContactInfo> phoneNumberColumn = new TextColumn<ContactInfo>() {
             @Override
-            public String getValue(ContactInfoDTO object) {
+            public String getValue(ContactInfo object) {
                 return object.getPhoneNumber();
             }
         };
         contactTable.addColumn(phoneNumberColumn, "Phone Number");
 
         // Column: Address
-        TextColumn<ContactInfoDTO> addressColumn = new TextColumn<ContactInfoDTO>() {
+        TextColumn<ContactInfo> addressColumn = new TextColumn<ContactInfo>() {
             @Override
-            public String getValue(ContactInfoDTO object) {
+            public String getValue(ContactInfo object) {
                 return object.getAddress();
             }
         };
         contactTable.addColumn(addressColumn, "Address");
         
-        greetingService.getAllContactInfos(new AsyncCallback<List<ContactInfoDTO>>() {
+        greetingService.getAllContactInfos(new AsyncCallback<List<ContactInfo>>() {
 			public void onFailure(Throwable caught) {
 				GWT.log("Error: initially getting all contact info ");
+				GWT.log("Error occurred while fetching contacts", caught);
 			}
 
-			public void onSuccess(List<ContactInfoDTO> result) {
+			public void onSuccess(List<ContactInfo> result) {
 				GWT.log("Success: initially getting all contact info from server");
 				dataProvider.getList().clear();
 				dataProvider.getList().addAll(result);
@@ -164,6 +170,13 @@ public class HomePage extends Composite {
 
 	
 	private void setupHandlers() {
+		initSearchHandler();
+		initSelectionModelHandler();
+		initAddUpdateDeleteHandlers();
+	
+	}
+	
+	private void initSearchHandler() {
 		class SearchContactHandler implements ClickHandler, KeyUpHandler {
 
 			public void onClick(ClickEvent event) {
@@ -185,22 +198,22 @@ public class HomePage extends Composite {
 				// First, we validate the input.
 				errorLabel.setText("");
 				
-				int fieldVerifier = FieldVerifier.isValidSearchKeyword(keyword);
+				SearchValidationResult fieldVerifier = FieldVerifier.isValidSearchKeyword(keyword);
 				
 				//ko du 4 ki tu 
-				if (fieldVerifier == 0 ) {
+				if (fieldVerifier.equals(SearchValidationResult.TOO_SHORT)) {
 					errorLabel.setText("Please enter at least four characters");
 					return;
 				}
-				if (fieldVerifier == -1 ) {
+				if (fieldVerifier.equals(SearchValidationResult.EMPTY)) {
 					// display all contact
-					greetingService.getAllContactInfos( new AsyncCallback<List<ContactInfoDTO>>() {
+					greetingService.getAllContactInfos( new AsyncCallback<List<ContactInfo>>() {
 						public void onFailure(Throwable caught) {
 							GWT.log("Error: get all contact from firstname from server");
 							Window.alert("Error fetching contacts by all name");
 						}
 
-						public void onSuccess(List<ContactInfoDTO> result) {
+						public void onSuccess(List<ContactInfo> result) {
 							GWT.log("Success: get all contact from firstname from server");
 							dataProvider.getList().clear();
 							dataProvider.getList().addAll(result);
@@ -209,15 +222,20 @@ public class HomePage extends Composite {
 					});							
 					return;
 				}
-				if (fieldVerifier == 1) {
+				if (fieldVerifier.equals(SearchValidationResult.VALID)) {
 					//display specific contact
-					greetingService.getContactInfosByFirstName(keyword, new AsyncCallback<List<ContactInfoDTO>>() {
+					greetingService.getContactInfosByFirstName(keyword, new AsyncCallback<List<ContactInfo>>() {
+						
 						public void onFailure(Throwable caught) {
-							GWT.log("Error: get specific contact from firstname: "+keyword+" from server");
-							Window.alert("Error fetching contacts by first name");
+							if (caught instanceof ContactNoneExistsException) {
+								Window.alert("Error: " + caught.getMessage());
+							} else {
+								GWT.log("Error: unexpected error", caught);
+								Window.alert("An unexpected error occurred while fetching contacts by first name" + keyword);
+							}
 						}
 
-						public void onSuccess(List<ContactInfoDTO> result) {
+						public void onSuccess(List<ContactInfo> result) {
 							GWT.log("Success: get suitable contact from firstname: "+keyword+" from server is success");
 							dataProvider.getList().clear();
 							dataProvider.getList().addAll(result);
@@ -233,8 +251,9 @@ public class HomePage extends Composite {
 		SearchContactHandler searchContactHandler = new SearchContactHandler();
 		searchButton.addClickHandler(searchContactHandler);
 		searchBox.addKeyUpHandler(searchContactHandler);
-		
-		
+	}
+	
+	private void initSelectionModelHandler() {
 		multiSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 		    @Override
 		    public void onSelectionChange(SelectionChangeEvent event) {
@@ -261,9 +280,9 @@ public class HomePage extends Composite {
 		        
 		    }
 		});
-		
-
-		
+	}
+	
+	private void initAddUpdateDeleteHandlers() {
 		//Add a handler to open the add info DialogBox
     	addContactButton.addClickHandler(new ClickHandler() {
     		@Override
@@ -302,8 +321,8 @@ public class HomePage extends Composite {
 
 			}
 		});
-		
-		
-	
 	}
+	
+	
 }
+	

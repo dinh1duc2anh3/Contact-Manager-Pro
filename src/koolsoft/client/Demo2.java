@@ -8,7 +8,7 @@ import java.util.Set;
 
 import koolsoft.shared.FieldVerifier;
 import koolsoft.shared.exception.ContactAlreadyExistsException;
-import koolsoft.shared.ContactInfoDTO;
+import koolsoft.shared.ContactInfo;
 import koolsoft.shared.ContactInfoVerifier;
 import java.util.Date;
 import java.util.List;
@@ -61,22 +61,9 @@ public class Demo2 implements EntryPoint {
 
 //	private final ContactServiceAsync contactService = GWT.create(ContactService.class);
 
-	private ListDataProvider<ContactInfoDTO> dataProvider = new ListDataProvider<>();
-	
-	private Set<ContactInfoDTO> selectedContacts = null;
-	
-	private ContactInfoDTO selectedContact = null;
-
-
-	/**
-	 * This is the entry point method.
-	 */
-	/**
-	 *
-	 */
 	public void onModuleLoad() {
 
-		HomePage homePage = new HomePage();
+		HomePage homePage = new HomePage(greetingService);
         RootPanel.get("mainContainer").add(homePage);
 
 	}

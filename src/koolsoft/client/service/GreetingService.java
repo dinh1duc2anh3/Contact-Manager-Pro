@@ -6,7 +6,7 @@ import java.util.Set;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import koolsoft.shared.ContactInfoDTO;
+import koolsoft.shared.ContactInfo;
 import koolsoft.shared.exception.ContactAlreadyExistsException;
 import koolsoft.shared.exception.ContactNoneExistsException;
 
@@ -15,20 +15,14 @@ import koolsoft.shared.exception.ContactNoneExistsException;
  */
 @RemoteServiceRelativePath("greet")
 public interface GreetingService extends RemoteService {
-//	String greetServer(String name) throws IllegalArgumentException;
-	Boolean checkContactExisted(ContactInfoDTO contact) throws IllegalArgumentException;
 	
-	Boolean checkPhoneNumberExisted(String phoneNumber) throws IllegalArgumentException;
+	List<ContactInfo> getContactInfosByFirstName(String firstName) throws ContactNoneExistsException;
 	
-	List<ContactInfoDTO> getContactInfosByFirstName(String firstName) throws IllegalArgumentException;
+	List<ContactInfo> getAllContactInfos() throws IllegalArgumentException;
 	
-	List<ContactInfoDTO> getAllContactInfos() throws IllegalArgumentException;
+	void addContactInfo(ContactInfo newContact) throws ContactAlreadyExistsException;
 	
-	void addContactInfo(ContactInfoDTO newContact) throws ContactAlreadyExistsException;
-	
-	void updateContactInfo(ContactInfoDTO selectedContact ,ContactInfoDTO updatedContact) throws ContactAlreadyExistsException,ContactNoneExistsException;
-	
-	Boolean deleteContactByFirstName(String firstName) throws IllegalArgumentException;
+	void updateContactInfo(ContactInfo selectedContact ,ContactInfo updatedContact) throws ContactAlreadyExistsException,ContactNoneExistsException;
 	
 	void deleteContactByPhoneNumber(String phoneNumber) throws ContactNoneExistsException;
 	

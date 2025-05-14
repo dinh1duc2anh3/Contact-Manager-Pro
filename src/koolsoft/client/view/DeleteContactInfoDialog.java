@@ -19,7 +19,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import koolsoft.client.service.GreetingServiceAsync;
-import koolsoft.shared.ContactInfoDTO;
+import koolsoft.shared.ContactInfo;
 
 public class DeleteContactInfoDialog {
 	
@@ -27,12 +27,12 @@ public class DeleteContactInfoDialog {
     private static DeleteContactInfoDialogUiBinder uiBinder = GWT.create(DeleteContactInfoDialogUiBinder.class);
     
     private GreetingServiceAsync greetingService = null;
-    private ListDataProvider<ContactInfoDTO> dataProvider = null;
+    private ListDataProvider<ContactInfo> dataProvider = null;
     private Button deleteContactButton;
     
-    private MultiSelectionModel<ContactInfoDTO> multiSelectionModel = null;
+    private MultiSelectionModel<ContactInfo> multiSelectionModel = null;
     
-    private Set<ContactInfoDTO> selectedContacts = null;
+    private Set<ContactInfo> selectedContacts = null;
     private List<String> selectedPhoneNumbers = new ArrayList<>();
     
     @UiField
@@ -44,7 +44,7 @@ public class DeleteContactInfoDialog {
     @UiField
     Button deleteInfoButton;
     
-    public DeleteContactInfoDialog(GreetingServiceAsync greetingService, Button deleteContactButton,ListDataProvider<ContactInfoDTO> dataProvider,Set<ContactInfoDTO> selectedContacts, MultiSelectionModel<ContactInfoDTO> multiSelectionModel) {
+    public DeleteContactInfoDialog(GreetingServiceAsync greetingService, Button deleteContactButton,ListDataProvider<ContactInfo> dataProvider,Set<ContactInfo> selectedContacts, MultiSelectionModel<ContactInfo> multiSelectionModel) {
         // Bind the UI elements defined in the UI file
         uiBinder.createAndBindUi(this);
         this.greetingService = greetingService;
@@ -54,7 +54,7 @@ public class DeleteContactInfoDialog {
         this.multiSelectionModel = multiSelectionModel;
         
         // extract phone numbers only to send ( id )
-    	for (ContactInfoDTO contactInfo : selectedContacts) {
+    	for (ContactInfo contactInfo : selectedContacts) {
     		this.selectedPhoneNumbers.add(contactInfo.getPhoneNumber());
     	}
         
@@ -76,6 +76,7 @@ public class DeleteContactInfoDialog {
 		greetingService.deleteContacts(selectedPhoneNumbers,new AsyncCallback<Void>() {
 			public void onFailure(Throwable caught) {
 				GWT.log("Error: connect server - deleting contact info ");
+				Window.alert("Error: deleting contact");
 			}
 
 			public void onSuccess(Void result) {

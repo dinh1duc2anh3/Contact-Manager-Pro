@@ -3,14 +3,16 @@ package koolsoft.shared;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
+import koolsoft.shared.enums.SearchValidationResult;
+
 public class FieldVerifier {
-	public static int isValidSearchKeyword(String name) {
+	public static SearchValidationResult isValidSearchKeyword(String name) {
 		
 		if (name == null || name.isEmpty() ) {
-			return -1; // empty
+			return SearchValidationResult.EMPTY; // empty
 		}
-		else if  (name.length() > 3) return 1; // >3
-		return 0; // between 1 and 3 ?
+		else if  (name.length() > 3) return SearchValidationResult.VALID; // >3
+		return SearchValidationResult.TOO_SHORT; // between 1 and 3 ?
 	}
 
 	public static Boolean isValidName(String name) {

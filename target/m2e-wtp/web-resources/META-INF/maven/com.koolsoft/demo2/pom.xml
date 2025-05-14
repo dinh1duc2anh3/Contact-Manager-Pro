@@ -11,6 +11,11 @@
 
     <!-- Packaging type (jar, war, etc.) -->
     <packaging>war</packaging>
+    
+    <properties>
+	    <maven.compiler.source>1.8</maven.compiler.source>
+	    <maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
 
     <!-- Maven Repositories -->
     <repositories>
@@ -19,6 +24,7 @@
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
     </repositories>
+
 
     <!-- Dependencies -->
     <dependencies>
@@ -34,6 +40,7 @@
 	    <artifactId>objectify</artifactId>
 	    <version>6.0.7</version>
 	  </dependency>
+	  
 	  <dependency>
 		    <groupId>com.google.cloud</groupId>
 		    <artifactId>google-cloud-datastore</artifactId>
@@ -50,7 +57,9 @@
 
     <!-- Build configuration -->
     <build>
+    	<outputDirectory>${project.basedir}/war/WEB-INF/classes</outputDirectory>
         <plugins>
+        	<!-- Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -58,8 +67,44 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    
                 </configuration>
+                
             </plugin>
+            
+            <!-- WAR Plugin (Fix lỗi WebappStructureSerializer) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.1</version>
+		            <configuration>
+		                <!-- The source directory for web resources like HTML, CSS, JS -->
+		                <warSourceDirectory>src/main/webapp</warSourceDirectory>
+		                <webResources>
+		                    <resource>
+		                        <directory>src/main/webapp</directory>
+		                    </resource>
+		                </webResources>
+		            </configuration>
+                
+            </plugin>
+            
+            <plugin>
+		      <groupId>org.eclipse.jetty</groupId>
+		      <artifactId>jetty-maven-plugin</artifactId>
+		      <version>11.0.20</version>
+		      <configuration>
+		        <scanIntervalSeconds>10</scanIntervalSeconds>
+		        <reload>automatic</reload>
+		        <webApp>
+		          <contextPath>/</contextPath>
+		        </webApp>
+		      </configuration>
+		    </plugin>
+		    
+			
+			
+            
         </plugins>
     </build>
 </project>

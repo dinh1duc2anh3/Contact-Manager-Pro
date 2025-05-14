@@ -17,10 +17,10 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
-import koolsoft.client.enums.ActionType;
 import koolsoft.client.service.GreetingServiceAsync;
-import koolsoft.shared.ContactInfoDTO;
+import koolsoft.shared.ContactInfo;
 import koolsoft.shared.ContactInfoVerifier;
+import koolsoft.shared.enums.ActionType;
 import koolsoft.shared.exception.ContactAlreadyExistsException;
 import koolsoft.shared.exception.ContactNoneExistsException;
 
@@ -29,10 +29,10 @@ public class AddUpdateContactInfoDialog {
 
 	protected Button triggerButton;
 
-	protected MultiSelectionModel<ContactInfoDTO> multiSelectionModel = null;
+	protected MultiSelectionModel<ContactInfo> multiSelectionModel = null;
 
-	protected Set<ContactInfoDTO> selectedContacts = null;
-	protected ContactInfoDTO selectedContact = null;
+	protected Set<ContactInfo> selectedContacts = null;
+	protected ContactInfo selectedContact = null;
 
 	private ActionType actionType;
 	
@@ -51,7 +51,7 @@ public class AddUpdateContactInfoDialog {
 	@UiField
 	Button closeButton;// button mở dialog ("Add Contact" hoặc "Update Contact")
 
-	protected ListDataProvider<ContactInfoDTO> dataProvider;
+	protected ListDataProvider<ContactInfo> dataProvider;
 
 	interface AddUpdateContactInfoDialogUiBinder extends UiBinder<Widget, AddUpdateContactInfoDialog> {
 	}
@@ -59,8 +59,8 @@ public class AddUpdateContactInfoDialog {
 	private static AddUpdateContactInfoDialogUiBinder uiBinder = GWT.create(AddUpdateContactInfoDialogUiBinder.class);
 
 	public AddUpdateContactInfoDialog(GreetingServiceAsync greetingService, Button triggerButton,
-			ListDataProvider<ContactInfoDTO> dataProvider, ContactInfoDTO selectedContact,
-			MultiSelectionModel<ContactInfoDTO> multiSelectionModel , ActionType actionType) {
+			ListDataProvider<ContactInfo> dataProvider, ContactInfo selectedContact,
+			MultiSelectionModel<ContactInfo> multiSelectionModel , ActionType actionType) {
 		uiBinder.createAndBindUi(this);
 		this.greetingService = greetingService;
 		this.triggerButton = triggerButton;
@@ -84,7 +84,7 @@ public class AddUpdateContactInfoDialog {
 		} else
 			GWT.log("Success: validate contact info ");
 
-		ContactInfoDTO contactInfo = new ContactInfoDTO(fn, ln, pn, ad);
+		ContactInfo contactInfo = new ContactInfo(fn, ln, pn, ad);
 
 		// Add or update logic
 		if (actionType.equals(ActionType.ADD)) {
@@ -95,7 +95,7 @@ public class AddUpdateContactInfoDialog {
 	};
 
 	// Add contact
-	private void addContactInfo(ContactInfoDTO newContactInfo) {
+	private void addContactInfo(ContactInfo newContactInfo) {
 		greetingService.addContactInfo(newContactInfo, new AsyncCallback<Void>() {
 			public void onFailure(Throwable caught) {
 				if (caught instanceof ContactAlreadyExistsException) {
@@ -116,7 +116,7 @@ public class AddUpdateContactInfoDialog {
 	}
 
 	// Update contact
-	private void updateContactInfo(ContactInfoDTO updatedContact) {
+	private void updateContactInfo(ContactInfo updatedContact) {
 		greetingService.updateContactInfo(selectedContact, updatedContact, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
