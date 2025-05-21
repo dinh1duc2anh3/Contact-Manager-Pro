@@ -130,7 +130,7 @@ public class MyObjectifyDB implements MyDB  {
 	}
 
 	@Override
-	public ContactInfo findByPhoneNumber(String phoneNumber) {
+	public ContactInfo findByPhoneNumber(String phoneNumber)  {
 		ContactInfo existing = ObjectifyService.ofy().load()
 				.type(ContactInfo.class)
 				.id(phoneNumber)
@@ -139,21 +139,35 @@ public class MyObjectifyDB implements MyDB  {
 	}
 	
 	@Override
-	public List<ContactInfo> findByFirstName(String firstname) throws ContactNoneExistsException {
+	public List<ContactInfo> findByFirstName(String firstname_lower) throws ContactNoneExistsException {
 		
 		List<ContactInfo> entities = ObjectifyService.ofy().load().type(ContactInfo.class)
-                .filter("firstName =", firstname.trim())
+                .filter("firstName_lower =", firstname_lower)
                 .list();
-		if ( entities == null ||entities.isEmpty()) {
-			logger.warning("No contacts found with firstname: " + firstname);
-			throw new ContactNoneExistsException("Cant find contacts from firstname "+firstname);
-			
-		}
 		
-                
-        // Map entities to DTOs
+		if ( entities == null ||entities.isEmpty()) {
+			logger.warning("No contacts found with firstname: " + firstname_lower);
+			throw new ContactNoneExistsException("Cant find contacts from firstname "+firstname_lower);
+			
+		} 
+        // Map entities to DTO
         return ContactInfoMapper.toDTOList(entities);
 				
+	}
+
+	@Override
+	public List<ContactInfo> findByFullName(String fullname) throws ContactNoneExistsException {
+		List<ContactInfo> entities = ObjectifyService.ofy().load().type(ContactInfo.class)
+                .filter("fullName_lower =", fullname.toLowerCase().trim())
+                .list();
+		
+		if ( entities == null ||entities.isEmpty()) {
+			logger.warning("No contacts found with firstname: " + fullname);
+			throw new ContactNoneExistsException("Cant find contacts from firstname "+fullname);
+			
+		} 
+        // Map entities to DTOs
+        return ContactInfoMapper.toDTOList(entities);
 	}
 	
 

@@ -19,10 +19,8 @@ public class FieldVerifier {
 		
 		if (name == null || name.length() > 15 || name.length() < 2) {
 			Window.alert("Error: Name "+name+" is invalid, min 2 , max 15 char");
-//			GWT.log("Error: Name "+name+" is invalid");
 			return false; //not ok 
 		}
-//		GWT.log("Success: Name "+name+" is valid");
 		return true; //oke 
 		
 	}
@@ -30,22 +28,22 @@ public class FieldVerifier {
 	
 	public static Boolean isValidPhoneNumber(String phoneNumber) {
 		if (phoneNumber == null || phoneNumber.length() > 10 || phoneNumber.length() < 8) {
-			Window.alert("Error: phoneNumber "+phoneNumber+" is invalid,  min 8 , max 10 char");
-//			GWT.log("Error: phoneNumber "+phoneNumber+" is invalid");
+			Window.alert("Error: phoneNumber is invalid,  at least 8 , max 10 char");
 			return false; //not ok  
 		}
-//		GWT.log("Success: phoneNumber "+phoneNumber+" is valid");
+		if (phoneNumber.contains(" ")) {
+			Window.alert("Error: phoneNumber must not contains space letter");
+			return false;
+		}
 		return true; //oke 
 		
 	}
 	
 	public static Boolean isValidAddress(String address) {
 		if (address == null || address.length() < 3 || address.length() > 25) {
-			Window.alert("Error: address "+address+" is invalid,  min 3 , max 25 char");
-//			GWT.log("Error: address "+address+" is invalid");
+			Window.alert("Error: address is invalid,  min 3 , max 25 char");
 			return false; //not ok  null / <3 / >15
 		}
-//		GWT.log("Success: address "+address+" is valid");
 		return true; //oke >3 <15
 		
 	}

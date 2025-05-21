@@ -4,6 +4,8 @@ package koolsoft.client.view;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -12,6 +14,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -35,7 +39,7 @@ public class AddUpdateContactInfoDialog {
 	protected ContactInfo selectedContact = null;
 
 	private ActionType actionType;
-	
+	private SimplePanel overlay;
 	@UiField
 	DialogBox dialogBox;
 	@UiField
@@ -60,7 +64,7 @@ public class AddUpdateContactInfoDialog {
 
 	public AddUpdateContactInfoDialog(GreetingServiceAsync greetingService, Button triggerButton,
 			ListDataProvider<ContactInfo> dataProvider, ContactInfo selectedContact,
-			MultiSelectionModel<ContactInfo> multiSelectionModel , ActionType actionType) {
+			MultiSelectionModel<ContactInfo> multiSelectionModel , ActionType actionType, SimplePanel overlay) {
 		uiBinder.createAndBindUi(this);
 		this.greetingService = greetingService;
 		this.triggerButton = triggerButton;
@@ -68,14 +72,25 @@ public class AddUpdateContactInfoDialog {
 		this.selectedContact = selectedContact;
 		this.multiSelectionModel = multiSelectionModel;
 		this.actionType = actionType;
+		this.overlay = overlay;
+		
+		// Đảm bảo DialogBox có đúng style
+        dialogBox.addAttachHandler(event -> {
+            if (event.isAttached()) {
+                Element dialogElement = dialogBox.getElement();
+                dialogElement.getStyle().setWidth(400, Unit.PX);
+//                dialogElement.getStyle().setMaxWidth(400, Unit.PX);
+                dialogElement.getStyle().setProperty("boxSizing", "border-box");
+            }
+        });
 	}
 
 	@UiHandler("actionButton")
 	protected void onActionButtonClick(ClickEvent event) {
-		String fn = firstNameBox.getText();
-		String ln = lastNameBox.getText();
-		String pn = phoneNumberBox.getText();
-		String ad = addressBox.getText();
+		String fn = firstNameBox.getText().trim();
+		String ln = lastNameBox.getText().trim();
+		String pn = phoneNumberBox.getText().trim();
+		String ad = addressBox.getText().trim();
 
 		// validate input
 		if (!ContactInfoVerifier.contactInfoVerifier(fn, ln, pn, ad)) {
@@ -147,11 +162,18 @@ public class AddUpdateContactInfoDialog {
 	}
 
 	void closeDialog() {
-		dialogBox.hide();
+		
 		clearFields();
 		triggerButton.setEnabled(true);
 		selectedContact = null;
 		multiSelectionModel.clear();
+		
+		// Đảm bảo xóa overlay khỏi RootPanel
+        if (overlay != null && RootPanel.get().getWidgetIndex(overlay) != -1) {
+            RootPanel.get().remove(overlay);
+        }
+        
+		dialogBox.hide();
 	};
 
 	protected void clearFields() {
@@ -162,7 +184,10 @@ public class AddUpdateContactInfoDialog {
 	}
 
 	public void showDialog() {
-		dialogBox.center();
+		// Đảm bảo hiển thị overlay
+        if (overlay != null && RootPanel.get().getWidgetIndex(overlay) == -1) {
+            RootPanel.get().add(overlay);
+        }
 
 		if (selectedContact == null) {
 			actionButton.setText("Add");
@@ -175,6 +200,7 @@ public class AddUpdateContactInfoDialog {
 			addressBox.setText(selectedContact.getAddress());
 		}
 
+		dialogBox.center();
 		dialogBox.show();
 		triggerButton.setEnabled(false);
 	};

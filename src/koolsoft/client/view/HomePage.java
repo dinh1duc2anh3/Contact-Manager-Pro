@@ -5,6 +5,8 @@ import java.util.Set;
 
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -21,6 +23,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -52,6 +56,9 @@ public class HomePage extends Composite {
 
     @UiField
     Button searchButton;
+    
+    @UiField
+    Element spinner; 
 
     @UiField
     Button addContactButton;
@@ -100,6 +107,13 @@ public class HomePage extends Composite {
 //       CellTable setup
         setupContactTable();
     }
+    
+    // Then use showSpinner(true) when starting an operation
+    // And showSpinner(false) when the operation completes
+       public void showSpinner(boolean show) {
+           // Only change display property, not visibility
+           spinner.getStyle().setDisplay(show ? Display.BLOCK : Display.NONE);
+       }
     
     private void setupContactTable() {
         contactTable.setSelectionModel(multiSelectionModel, DefaultSelectionEventManager.<ContactInfo>createCheckboxManager());
@@ -180,6 +194,7 @@ public class HomePage extends Composite {
 		class SearchContactHandler implements ClickHandler, KeyUpHandler {
 
 			public void onClick(ClickEvent event) {
+				showSpinner(true);
 				// Add it to the root panel.
 				String keyword = searchBox.getText();
 				GWT.log("send keyword: "+keyword+ " to server ");
@@ -187,6 +202,7 @@ public class HomePage extends Composite {
 			}
 
 			public void onKeyUp(KeyUpEvent event) {
+				showSpinner(true);
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					String keyword = searchBox.getText();
 					GWT.log("send keyword: "+keyword+ " to server ");
@@ -209,11 +225,13 @@ public class HomePage extends Composite {
 					// display all contact
 					greetingService.getAllContactInfos( new AsyncCallback<List<ContactInfo>>() {
 						public void onFailure(Throwable caught) {
+							showSpinner(false);
 							GWT.log("Error: get all contact from firstname from server");
 							Window.alert("Error fetching contacts by all name");
 						}
 
 						public void onSuccess(List<ContactInfo> result) {
+							showSpinner(false);
 							GWT.log("Success: get all contact from firstname from server");
 							dataProvider.getList().clear();
 							dataProvider.getList().addAll(result);
@@ -227,6 +245,7 @@ public class HomePage extends Composite {
 					greetingService.getContactInfosByFirstName(keyword, new AsyncCallback<List<ContactInfo>>() {
 						
 						public void onFailure(Throwable caught) {
+							showSpinner(false);
 							if (caught instanceof ContactNoneExistsException) {
 								Window.alert("Error: " + caught.getMessage());
 							} else {
@@ -236,6 +255,7 @@ public class HomePage extends Composite {
 						}
 
 						public void onSuccess(List<ContactInfo> result) {
+							showSpinner(false);
 							GWT.log("Success: get suitable contact from firstname: "+keyword+" from server is success");
 							dataProvider.getList().clear();
 							dataProvider.getList().addAll(result);
@@ -283,41 +303,60 @@ public class HomePage extends Composite {
 	}
 	
 	private void initAddUpdateDeleteHandlers() {
-		//Add a handler to open the add info DialogBox
-    	addContactButton.addClickHandler(new ClickHandler() {
-    		@Override
-    		public void onClick(ClickEvent event) {
-					// Create the dialog
-    			AddUpdateContactInfoDialog addContactInfoDialog = new AddUpdateContactInfoDialog(greetingService, addContactButton,
-						dataProvider,selectedContact, multiSelectionModel, ActionType.ADD);
-		        	addContactInfoDialog.showDialog();
-					
-					addContactButton.setEnabled(false);
-					
+		// Add a handler to open the add info DialogBox
+		addContactButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+
+				// Tạo overlay element
+				SimplePanel overlay = new SimplePanel();
+				overlay.getElement().setId("dialogOverlay");
+				overlay.setStyleName("modal-overlay");
+
+				// Thêm overlay vào RootPanel trước khi hiển thị dialog
+				if (RootPanel.get().getWidgetIndex(overlay) == -1) {
+					RootPanel.get().add(overlay);
 				}
-			});
-	
-    
+
+				// Create the dialog
+				AddUpdateContactInfoDialog addContactInfoDialog = new AddUpdateContactInfoDialog(greetingService,
+						addContactButton, dataProvider, selectedContact, multiSelectionModel, ActionType.ADD, overlay);
+				addContactInfoDialog.showDialog();
+
+				addContactButton.setEnabled(false);
+
+			}
+		});
+
 		updateContactButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				
-				AddUpdateContactInfoDialog updateContactInfoDialog = new AddUpdateContactInfoDialog(greetingService, updateContactButton,
-						dataProvider,selectedContact, multiSelectionModel , ActionType.UPDATE);
+				// Tạo overlay element
+				SimplePanel overlay = new SimplePanel();
+				overlay.getElement().setId("dialogOverlay");
+				overlay.setStyleName("modal-overlay");
+
+				AddUpdateContactInfoDialog updateContactInfoDialog = new AddUpdateContactInfoDialog(greetingService,
+						updateContactButton, dataProvider, selectedContact, multiSelectionModel, ActionType.UPDATE,
+						overlay);
 				updateContactInfoDialog.showDialog();
 			}
 		});
-		
+
 		deleteContactButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				GWT.log("1 - pressed delete button at homepage");
+				// Tạo overlay element
+				SimplePanel overlay = new SimplePanel();
+				overlay.getElement().setId("dialogOverlay");
+				overlay.setStyleName("modal-overlay");
+				
 				// Create the dialog	
 				DeleteContactInfoDialog deleteContactInfoDialog = new DeleteContactInfoDialog(greetingService, deleteContactButton,
-						dataProvider,selectedContacts, multiSelectionModel);
+						dataProvider,selectedContacts, multiSelectionModel, overlay);
+				
 				deleteContactInfoDialog.showDialog();
 
-				deleteContactButton.setEnabled(false);
 
 			}
 		});
