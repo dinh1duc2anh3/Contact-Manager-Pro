@@ -16,7 +16,11 @@ import koolsoft.shared.exception.ContactNoneExistsException;
 @RemoteServiceRelativePath("greet")
 public interface GreetingService extends RemoteService {
 	
-	List<ContactInfo> getContactInfosByFirstName(String firstName) throws ContactNoneExistsException;
+	List<ContactInfo> getContactInfosByFirstName(String firstName) throws ContactNoneExistsException ;
+	
+	List<ContactInfo> getContactInfosByFullName(String fullName) throws ContactNoneExistsException;
+	
+	ContactInfo getContactInfosByPhoneNumber(String phoneNumber);
 	
 	List<ContactInfo> getAllContactInfos() throws IllegalArgumentException;
 	

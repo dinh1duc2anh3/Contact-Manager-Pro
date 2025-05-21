@@ -16,9 +16,10 @@ public class ContactInfo implements Serializable, IsSerializable {
 	private static final long serialVersionUID = 1L;
 	@Index
 	private String firstName;
-	private String firstName_lower;
+	
     private String lastName;
-	private String fullName_lower;
+    @Index
+	private String fullName;
     @Id
     private String phoneNumber;
     private String address;
@@ -30,16 +31,25 @@ public class ContactInfo implements Serializable, IsSerializable {
 	//create new contact info 
 	public ContactInfo(String firstName, String lastName, String phoneNumber, String address
 			) {
-		this.firstName = firstName;
-		this.firstName_lower = firstName.toLowerCase();
-		this.lastName = lastName;
-		this.fullName_lower = firstName_lower + " " + lastName.toLowerCase();
+		this.firstName = ContactInfoFormatter.formatName(firstName);
+		this.lastName = ContactInfoFormatter.formatName(lastName);
+		this.fullName = ContactInfoFormatter.formatName(firstName + " " + lastName) ;
 		this.address = address;
-		this.phoneNumber = phoneNumber;
-//		this.id = nextId;
-//		nextId++;
+		this.phoneNumber = ContactInfoFormatter.formatPhoneNumber(phoneNumber) ;
 	}
 	
+
+	public String getFullName() {
+		return fullName;
+	}
+
+
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+
 
 	@Override
 	public boolean equals(Object obj) {

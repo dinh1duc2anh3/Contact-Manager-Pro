@@ -1,8 +1,12 @@
 package koolsoft.client.view;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jetty.security.LoggedOutAuthentication;
+
+import com.gargoylesoftware.htmlunit.WebConsole.Logger;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -196,7 +200,7 @@ public class HomePage extends Composite {
 			public void onClick(ClickEvent event) {
 				showSpinner(true);
 				// Add it to the root panel.
-				String keyword = searchBox.getText();
+				String keyword = searchBox.getText().trim();
 				GWT.log("send keyword: "+keyword+ " to server ");
 				sendNameToServer(keyword);
 			}
@@ -204,7 +208,7 @@ public class HomePage extends Composite {
 			public void onKeyUp(KeyUpEvent event) {
 				showSpinner(true);
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					String keyword = searchBox.getText();
+					String keyword = searchBox.getText().trim();
 					GWT.log("send keyword: "+keyword+ " to server ");
 					sendNameToServer(keyword);
 				}
@@ -238,34 +242,92 @@ public class HomePage extends Composite {
 							dataProvider.refresh();							
 						}
 					});							
-					return;
+					return; 
 				}
 				if (fieldVerifier.equals(SearchValidationResult.VALID)) {
-					//display specific contact
-					greetingService.getContactInfosByFirstName(keyword, new AsyncCallback<List<ContactInfo>>() {
-						
-						public void onFailure(Throwable caught) {
-							showSpinner(false);
-							if (caught instanceof ContactNoneExistsException) {
-								Window.alert("Error: " + caught.getMessage());
-							} else {
-								GWT.log("Error: unexpected error", caught);
-								Window.alert("An unexpected error occurred while fetching contacts by first name" + keyword);
-							}
-						}
-
-						public void onSuccess(List<ContactInfo> result) {
-							showSpinner(false);
-							GWT.log("Success: get suitable contact from firstname: "+keyword+" from server is success");
-							dataProvider.getList().clear();
-							dataProvider.getList().addAll(result);
-							dataProvider.refresh();													
-						}
-					});
+					//search with criteria as firstname, fullname, phonenumber
+					searchWithFallback(keyword);
 				}		
 
 			}
+			
+			
+			private void searchWithFallback( String keyword) {
+			    showSpinner(true);
+			    searchByFirstName(keyword);
+			}
+			
+			private void searchByFirstName( String keyword) {
+			    greetingService.getContactInfosByFirstName(keyword, new AsyncCallback<List<ContactInfo>>() {
+			        public void onFailure(Throwable caught) {
+			        	if (caught instanceof ContactNoneExistsException) {
+							Window.alert("Error: " + caught.getMessage());
+						} else {
+							GWT.log("Error: unexpected error", caught);
+						}
+			            searchByFullName(keyword); // fallback
+			        }
+
+			        public void onSuccess(List<ContactInfo> result) {
+			            if (result != null && !result.isEmpty()) {
+			                handleResult(result, "first name");
+			            } else {
+			                searchByFullName(keyword); // fallback
+			            }
+			        }
+			    });
+			}
+			private void searchByFullName( String keyword) {
+			    greetingService.getContactInfosByFullName(keyword, new AsyncCallback<List<ContactInfo>>() {
+			        public void onFailure(Throwable caught) {
+			        	if (caught instanceof ContactNoneExistsException) {
+							Window.alert("Error: " + caught.getMessage());
+						} else {
+							GWT.log("Error: unexpected error", caught);
+						}
+			            searchByPhoneNumber(keyword); // fallback
+			        }
+
+			        public void onSuccess(List<ContactInfo> result) {
+			            if (result != null && !result.isEmpty()) {
+			                handleResult(result, "full name");
+			            } else {
+			                searchByPhoneNumber(keyword); // fallback
+			            }
+			        }
+			    });
+			}
+			private void searchByPhoneNumber( String keyword) {
+			    greetingService.getContactInfosByPhoneNumber(keyword, new AsyncCallback<ContactInfo>() {
+			        public void onFailure(Throwable caught) {
+			            showSpinner(false);
+			            GWT.log("Error searching by phone number", caught);
+			            Window.alert("No contacts found.");
+			        }
+
+			        public void onSuccess(ContactInfo result) {
+			            showSpinner(false);
+			            if (result != null) {
+			                List<ContactInfo> list = new ArrayList<>();
+			                list.add(result);
+			                handleResult(list, "phone number");
+			            } else {
+			                Window.alert("No contacts found.");
+			            }
+			        }
+			    });
+			}
+			
+			private void handleResult(List<ContactInfo> contacts, String criteria) {
+			    GWT.log("Success: found contacts by " + criteria);
+			    dataProvider.getList().clear();
+			    dataProvider.getList().addAll(contacts);
+			    dataProvider.refresh();
+			    showSpinner(false);
+			}
 		}
+		
+		
 		
 		//Add a handler to search button + search field
 		SearchContactHandler searchContactHandler = new SearchContactHandler();

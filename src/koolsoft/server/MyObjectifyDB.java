@@ -1,9 +1,7 @@
 package koolsoft.server;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import com.googlecode.objectify.ObjectifyService;
 import koolsoft.server.mapper.ContactInfoMapper;
@@ -14,10 +12,6 @@ import koolsoft.shared.exception.ContactNoneExistsException;
 public class MyObjectifyDB implements MyDB  {
 	
 	private static final Logger logger = Logger.getLogger(MyObjectifyDB.class.getName());
-    
-
-	private static boolean initialized = false;
-	
 	
 	
 	public void loadInit() {
@@ -37,18 +31,18 @@ public class MyObjectifyDB implements MyDB  {
 	public void printAllContacts() {
 	    List<ContactInfo> contacts = ObjectifyService.ofy().load().type(ContactInfo.class).list();
 	    
-	    
-	    
 	    List<ContactInfo> contactDTOs = ContactInfoMapper.toDTOList(contacts);
 	    System.out.println("Total contacts in Datastore: " + contactDTOs.size());
 	    for (ContactInfo contactDTO : contactDTOs) {
-	        System.out.println(contactDTO.getFirstName() + " " + contactDTO.getLastName() + " - " + contactDTO.getPhoneNumber());
+	        System.out.println(contactDTO.getFirstName() + " " + contactDTO.getLastName() + 
+	        		" - " + contactDTO.getFirstName()+ " -"  + contactDTO.getFullName()+ 
+	        		"- " + contactDTO.getPhoneNumber());
 	    }
 	}
 	
 	
 	@Override
-	public List<ContactInfo> getAll() {
+	public List<ContactInfo> findAll() {
 		System.out.println("Getting all contacts: " );
 		
 		 List<ContactInfo> contacts = ObjectifyService.ofy().load().type(ContactInfo.class).list();
@@ -58,8 +52,45 @@ public class MyObjectifyDB implements MyDB  {
 		contacts = ObjectifyService.ofy().load().type(ContactInfo.class).list();
 		List<ContactInfo> contactDTOs = ContactInfoMapper.toDTOList(contacts);
 		System.out.println("Total contacts get from Datastore: " + contactDTOs.size());
+		
+		printAllContacts();
 		return contactDTOs;
         
+	}
+	
+	@Override
+	public List<ContactInfo> findByFirstName(String firstname_format) throws ContactNoneExistsException  {
+		List<ContactInfo> entities = ObjectifyService.ofy().load().type(ContactInfo.class)
+                .filter("firstName =", firstname_format)
+                .list();
+		
+		if (entities == null || entities.isEmpty()) {
+			throw new ContactNoneExistsException("Can't find contact from firstname: "+firstname_format+ " doesn't exist.");
+		}
+        return ContactInfoMapper.toDTOList(entities);
+        
+	}
+
+	@Override
+	public List<ContactInfo> findByFullName(String fullname_format) throws ContactNoneExistsException {
+		List<ContactInfo> entities = ObjectifyService.ofy().load().type(ContactInfo.class)
+                .filter("fullName =", fullname_format)
+                .list();
+		if (entities == null || entities.isEmpty()) {
+			throw new ContactNoneExistsException("Can't find contact from firstname: "+fullname_format+ " doesn't exist.");
+		}
+		
+        return ContactInfoMapper.toDTOList(entities);
+	}
+	
+	@Override
+	public ContactInfo findByPhoneNumber(String phoneNumber_format)  {
+		ContactInfo existing = ObjectifyService.ofy().load()
+				.type(ContactInfo.class)
+				.id(phoneNumber_format)
+				.now();
+		
+		return ContactInfoMapper.toDTO(existing) ;
 	}
 
 	@Override
@@ -129,46 +160,8 @@ public class MyObjectifyDB implements MyDB  {
 		return ;
 	}
 
-	@Override
-	public ContactInfo findByPhoneNumber(String phoneNumber)  {
-		ContactInfo existing = ObjectifyService.ofy().load()
-				.type(ContactInfo.class)
-				.id(phoneNumber)
-				.now();
-		return existing == null ? null : existing;
-	}
 	
-	@Override
-	public List<ContactInfo> findByFirstName(String firstname_lower) throws ContactNoneExistsException {
-		
-		List<ContactInfo> entities = ObjectifyService.ofy().load().type(ContactInfo.class)
-                .filter("firstName_lower =", firstname_lower)
-                .list();
-		
-		if ( entities == null ||entities.isEmpty()) {
-			logger.warning("No contacts found with firstname: " + firstname_lower);
-			throw new ContactNoneExistsException("Cant find contacts from firstname "+firstname_lower);
-			
-		} 
-        // Map entities to DTO
-        return ContactInfoMapper.toDTOList(entities);
-				
-	}
-
-	@Override
-	public List<ContactInfo> findByFullName(String fullname) throws ContactNoneExistsException {
-		List<ContactInfo> entities = ObjectifyService.ofy().load().type(ContactInfo.class)
-                .filter("fullName_lower =", fullname.toLowerCase().trim())
-                .list();
-		
-		if ( entities == null ||entities.isEmpty()) {
-			logger.warning("No contacts found with firstname: " + fullname);
-			throw new ContactNoneExistsException("Cant find contacts from firstname "+fullname);
-			
-		} 
-        // Map entities to DTOs
-        return ContactInfoMapper.toDTOList(entities);
-	}
+	
 	
 
 }

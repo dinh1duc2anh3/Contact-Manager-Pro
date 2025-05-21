@@ -3,6 +3,7 @@ package koolsoft.server;
 import koolsoft.client.service.GreetingService;
 import koolsoft.server.mapper.ContactInfoMapper;
 import koolsoft.shared.ContactInfo;
+import koolsoft.shared.ContactInfoFormatter;
 import koolsoft.shared.exception.ContactAlreadyExistsException;
 import koolsoft.shared.exception.ContactNoneExistsException;
 
@@ -32,16 +33,27 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     private MyObjectifyDB myDB = new MyObjectifyDB();
 
     @Override
-    public List<ContactInfo> getContactInfosByFirstName(String input) throws ContactNoneExistsException {
-    	String lowerKeyword = input.toLowerCase().trim();
-    	
-    	return myDB.findByFirstName(lowerKeyword);
+    public List<ContactInfo> getContactInfosByFirstName(String firstName) throws ContactNoneExistsException  {
+    	String formattedFirstName = ContactInfoFormatter.formatName(firstName);
+    	return myDB.findByFirstName(formattedFirstName);
     }
+    
+
+	@Override
+	public List<ContactInfo> getContactInfosByFullName(String fullName) throws ContactNoneExistsException {
+		String formattedFullName = ContactInfoFormatter.formatName(fullName);
+		return myDB.findByFullName(formattedFullName);
+	}
+
+	@Override
+	public ContactInfo getContactInfosByPhoneNumber(String phoneNumber){
+		String formattedPhoneNumber = ContactInfoFormatter.formatPhoneNumber(phoneNumber);
+		return myDB.findByPhoneNumber(formattedPhoneNumber);
+	}
 
     @Override
     public List<ContactInfo> getAllContactInfos() {
-        return myDB.getAll();      
-        
+        return myDB.findAll();      
     }
 
 
@@ -76,5 +88,6 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         myDB.deleteByPhoneNumber(phoneNumber);
         return;
     }
+
 
 }

@@ -17,8 +17,8 @@ public class MyContactDatabase {
 //
 	public static final List<ContactInfo> CONTACTS = new ArrayList<>(
 			Arrays.asList(
-				      new ContactInfo("Mary","Smith", "0984127113", "123 First St"),
-				      new ContactInfo("Michael","Smith", "0984127115", "129 Second Rd"),
+				      new ContactInfo("mary","smith", "09841 27113", "123 First St"),
+				      new ContactInfo("Michael","SMith", "098 4127115", "129 Second Rd"),
 				      new ContactInfo("Patricia","Johnson", "0984127117", "133 Fourth Blvd"),
 				      new ContactInfo("Barbara","Johnson", "0984127119", "553 Third Ln"),
 				      new ContactInfo("John","Williams", "0984127121", "173 Fourth Avenue"),
