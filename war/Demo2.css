@@ -11,7 +11,7 @@ h1 {
 }
 
 
-/* Input tìm kiếm */
+/* Input tÃ¬m kiáº¿m */
 .searchField {
     padding: 10px;
     width: 280px;
@@ -22,72 +22,65 @@ h1 {
 
 
 .search-panel {
-  margin-bottom: 12px; !important
+  margin-bottom: 20px !important;
+  padding: 10px 0;
   }
 
+.error-panel {
+  margin-bottom: 20px !important;
+  min-height: 24px; /* Ensures consistent height even when empty */
+}
+
 .action-panel .btn {
-  margin-right: 6px;
+  margin-bottom: 20px !important;
   padding: 4px 10px;
 }
 
 
 
-.searchButton {
-  background-color: #04AA6D; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
+.centered-dialog {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 1050 !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .5) !important;
+    border-radius: 6px !important;
+    background-color: white !important;
+    width: 400px !important;  /* Đặt cố định width */
+    max-width: 400px !important;
 }
-.searchButton:hover {
-    background-color: #005a9e;
+
+/* Đảm bảo dialog không kéo dài quá 400px */
+.custom-dialog {
+    width: auto !important;
+    max-width: 400px !important;
+    margin: 0 !important;
 }
 
 
-
-/* Các nút chức năng */
-.addButton, .updateButton, .deleteButton {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    margin-right: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    color: white;
-    transition: 0.3s;
-}
-.addButton {
-    background-color: #28a745;
-}
-.addButton:hover {
-    background-color: #218838;
-}
-.updateButton {
-    background-color: #ffc107;
-    color: #212529;
-}
-.updateButton:hover {
-    background-color: #e0a800;
-}
-.deleteButton {
-    background-color: #dc3545;
-}
-.deleteButton:hover {
-    background-color: #c82333;
+/* Đảm bảo nội dung trong dialog không bị tràn */
+.dialog-content {
+    width: 100% !important;
+    max-width: 400px !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
 }
 
-
-.addButton, .updateButton, .deleteButton {
-    transition: transform 0.3s ease;
+.modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 1040 !important;
+    display: block !important;
+}
+.action-button {
+  margin-left: 10px !important;/* Space between buttons */
 }
 
-.addButton:hover, .updateButton:hover, .deleteButton:hover {
-    transform: scale(1.05);
-}
 
 /** Most GWT widgets already have a style name defined */
 .gwt-DialogBox {
@@ -96,7 +89,7 @@ h1 {
 
 
 
-/* Layout tổng thể */
+/* Layout tá»•ng thá»ƒ */
 .gwt-VerticalPanel {
     padding: 24px;
     background-color: #f0f4f8;
@@ -112,14 +105,14 @@ h1 {
   margin: 5px;
 }
 
-/* Label lỗi */
+/* Label lá»—i */
 .serverResponseLabelError {
     color: red;
     font-weight: bold;
 }
 
 
-/* Bảng */
+/* Báº£ng */
 .gwt-CellTable {
     width: 100%;
     border-collapse: collapse;
@@ -163,6 +156,20 @@ h1 {
     height: 40px;
     animation: spin 1s linear infinite;
 }
+
+
+.small-spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0078D4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
 
 @keyframes spin {
     0% { transform: rotate(0deg); }

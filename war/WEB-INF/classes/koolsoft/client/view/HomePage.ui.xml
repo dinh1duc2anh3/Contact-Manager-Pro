@@ -4,22 +4,27 @@
 
   <g:VerticalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER">
 	
-    <!-- Search Section -->
+    <!-- Search -->
     <g:HorizontalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER"  verticalAlignment="middle" styleName="search-panel">
-      	<g:TextBox ui:field="searchBox"  width="200px"/>
-      	<g:Button ui:field="searchButton" text="Search" styleName="btn btn-sm btn-info"/>
+      	<g:TextBox ui:field="searchBox" width="300px" styleName="form-control"/>
+      	<g:Button ui:field="searchButton" text="Search" styleName="btn btn-primary "/>
+		 <!-- Simple panel to hold the spinner -->
+		 <g:HTMLPanel width="30px" height="30px">
+	        <div ui:field="spinnerContainer" style="width:30px; height:30px; display:flex; align-items:center; justify-content:center;">
+	          <div ui:field="spinner" class="small-spinner" style="display:none;"></div>
+	        </div>
+	      </g:HTMLPanel>
     </g:HorizontalPanel>
     
-    <g:HorizontalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER"  verticalAlignment="middle" >
-     	 <g:Label ui:field="errorLabel"  />
-    </g:HorizontalPanel>
-
-    <!-- Action Buttons Section -->
-    <g:HorizontalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER"  verticalAlignment="middle" styleName="action-panel">
-      	<g:Button ui:field="addContactButton" text="Add Contact" styleName="btn btn-sm btn-success"/>
-      	<g:Button ui:field="updateContactButton" text="Update Contact" styleName="btn btn-sm btn-warning"/>
-     	 <g:Button ui:field="deleteContactButton" text="Delete Contact" styleName="btn btn-sm btn-danger"/>
-    </g:HorizontalPanel>
+    <!-- Error -->
+     	 <g:Label ui:field="errorLabel" styleName="text-danger"  />
+	
+    <!-- Actions -->
+    <g:HorizontalPanel spacing="10" verticalAlignment="middle" styleName="action-panel" horizontalAlignment="right">
+	   <g:Button ui:field="addContactButton" text="Add Contact" styleName="btn btn-sm btn-success action-button"/>
+	   <g:Button ui:field="updateContactButton" text="Update Contact" styleName="btn btn-sm btn-warning action-button"/>
+	   <g:Button ui:field="deleteContactButton" text="Delete Contact" styleName="btn btn-sm btn-danger action-button"/>
+	</g:HorizontalPanel>
 
     <!-- Table Section -->
     <g:VerticalPanel width="100%" spacing="10" horizontalAlignment="ALIGN_CENTER"  verticalAlignment="middle">

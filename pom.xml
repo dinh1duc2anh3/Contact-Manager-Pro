@@ -13,8 +13,11 @@
     <packaging>war</packaging>
     
     <properties>
-	    <maven.compiler.source>1.8</maven.compiler.source>
-	    <maven.compiler.target>1.8</maven.compiler.target>
+	    <!-- Thống nhất phiên bản Java -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <gwt.version>2.11.0</gwt.version>
 	</properties>
 
     <!-- Maven Repositories -->
@@ -51,6 +54,14 @@
 		    <artifactId>slf4j-api</artifactId>
 		    <version>1.7.29</version>
 		</dependency>
+		<!-- Example: Use an older Jackson version -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>2.13.5</version> <!-- This is compiled with Java 8 compatibility -->
+		</dependency>
+		
+		
     </dependencies>
     
 	  

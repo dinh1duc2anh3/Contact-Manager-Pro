@@ -16,7 +16,9 @@ public class ContactInfo implements Serializable, IsSerializable {
 	private static final long serialVersionUID = 1L;
 	@Index
 	private String firstName;
+	private String firstName_lower;
     private String lastName;
+	private String fullName_lower;
     @Id
     private String phoneNumber;
     private String address;
@@ -29,7 +31,9 @@ public class ContactInfo implements Serializable, IsSerializable {
 	public ContactInfo(String firstName, String lastName, String phoneNumber, String address
 			) {
 		this.firstName = firstName;
+		this.firstName_lower = firstName.toLowerCase();
 		this.lastName = lastName;
+		this.fullName_lower = firstName_lower + " " + lastName.toLowerCase();
 		this.address = address;
 		this.phoneNumber = phoneNumber;
 //		this.id = nextId;

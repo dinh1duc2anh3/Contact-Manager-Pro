@@ -29,13 +29,13 @@ import java.util.logging.Logger;
 @SuppressWarnings("serial")
 public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
 
-    private static final Logger logger = Logger.getLogger(GreetingServiceImpl.class.getName());
-    
     private MyObjectifyDB myDB = new MyObjectifyDB();
 
     @Override
     public List<ContactInfo> getContactInfosByFirstName(String input) throws ContactNoneExistsException {
-    	return myDB.findByFirstName(input);
+    	String lowerKeyword = input.toLowerCase().trim();
+    	
+    	return myDB.findByFirstName(lowerKeyword);
     }
 
     @Override

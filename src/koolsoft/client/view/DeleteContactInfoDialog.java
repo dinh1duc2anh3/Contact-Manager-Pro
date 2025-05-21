@@ -13,6 +13,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -29,6 +31,7 @@ public class DeleteContactInfoDialog {
     private GreetingServiceAsync greetingService = null;
     private ListDataProvider<ContactInfo> dataProvider = null;
     private Button deleteContactButton;
+    private SimplePanel overlay;
     
     private MultiSelectionModel<ContactInfo> multiSelectionModel = null;
     
@@ -44,7 +47,9 @@ public class DeleteContactInfoDialog {
     @UiField
     Button deleteInfoButton;
     
-    public DeleteContactInfoDialog(GreetingServiceAsync greetingService, Button deleteContactButton,ListDataProvider<ContactInfo> dataProvider,Set<ContactInfo> selectedContacts, MultiSelectionModel<ContactInfo> multiSelectionModel) {
+    public DeleteContactInfoDialog(GreetingServiceAsync greetingService, Button deleteContactButton,
+    		ListDataProvider<ContactInfo> dataProvider,Set<ContactInfo> selectedContacts, 
+    		MultiSelectionModel<ContactInfo> multiSelectionModel, SimplePanel overlay) {
         // Bind the UI elements defined in the UI file
         uiBinder.createAndBindUi(this);
         this.greetingService = greetingService;
@@ -52,6 +57,7 @@ public class DeleteContactInfoDialog {
         this.dataProvider = dataProvider;
         this.selectedContacts = selectedContacts;
         this.multiSelectionModel = multiSelectionModel;
+        this.overlay = overlay;
         
         // extract phone numbers only to send ( id )
     	for (ContactInfo contactInfo : selectedContacts) {
@@ -62,10 +68,18 @@ public class DeleteContactInfoDialog {
 
     @UiHandler("closeDeleteInfoButton")
     void onCloseButtonClick(ClickEvent event) {
-        dialogBox.hide();
+    	closeDialog();
+        
+    }
+    
+    void closeDialog() {
         deleteContactButton.setEnabled(true);
-		
 		multiSelectionModel.clear();
+		// Đảm bảo xóa overlay khỏi RootPanel
+        if (overlay != null && RootPanel.get().getWidgetIndex(overlay) != -1) {
+            RootPanel.get().remove(overlay);
+        }
+    	dialogBox.hide();
     }
 
     // UI Handler for Delete button
@@ -84,17 +98,17 @@ public class DeleteContactInfoDialog {
 				GWT.log("Success: deleting contact");
 				dataProvider.getList().removeAll(selectedContacts); 
 				dataProvider.refresh();
-				
-				multiSelectionModel.clear();
-				
-				//hide add contact info dialogbox
-				dialogBox.hide();
-		        deleteContactButton.setEnabled(true);
+
+				closeDialog();
 			}
 		});
     }
 
     public void showDialog() {
+    	// Đảm bảo hiển thị overlay
+        if (overlay != null && RootPanel.get().getWidgetIndex(overlay) == -1) {
+            RootPanel.get().add(overlay);
+        }
         dialogBox.center();
         dialogBox.show();
         deleteContactButton.setEnabled(false);
