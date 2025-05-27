@@ -1,13 +1,9 @@
 package koolsoft.client.service;
 
 import java.util.List;
-import java.util.Set;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import koolsoft.shared.ContactInfo;
-import koolsoft.shared.exception.ContactAlreadyExistsException;
-import koolsoft.shared.exception.ContactNoneExistsException;
 
 /**
  * The async counterpart of <code>GreetingService</code>.

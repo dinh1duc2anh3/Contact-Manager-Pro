@@ -1,2 +1,45 @@
-/target/
-/test-classes/
+# ========================================
+# Eclipse/IDE settings (ignore IDE noise)
+# ========================================
+.project
+.classpath
+.settings/
+.metadata/
+
+# ========================================
+# Build artifacts
+# ========================================
+target/
+gwt-unitCache/
+
+# ========================================
+# GWT compiled output (ignore auto-generated files)
+# ========================================
+# Ignore everything in war/
+war/*
+
+# But keep your manually written files
+!war/Demo2.html
+!war/Demo2.css
+!war/your-custom.js  # replace with real name if you have handwritten JS
+
+# Prevent compiled JS from being tracked
+# (Even though they're inside war/, this is good as double protection)
+war/*.nocache.js
+war/*.cache.js
+war/*.devmode.js
+war/*.gwt.rpc
+war/*.cssmap
+war/compile-report/
+
+# ========================================
+# OS-specific files
+# ========================================
+.DS_Store
+Thumbs.db
+
+# ========================================
+# Other IDEs (optional)
+# ========================================
+.idea/
+*.iml

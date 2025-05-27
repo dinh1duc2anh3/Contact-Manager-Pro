@@ -59,8 +59,6 @@ public class Demo2 implements EntryPoint {
 	 */
 	private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
 
-//	private final ContactServiceAsync contactService = GWT.create(ContactService.class);
-
 	public void onModuleLoad() {
 
 		HomePage homePage = new HomePage(greetingService);

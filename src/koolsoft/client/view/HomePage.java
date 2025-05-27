@@ -1,65 +1,53 @@
 package koolsoft.client.view;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.jetty.security.LoggedOutAuthentication;
-
-import com.gargoylesoftware.htmlunit.WebConsole.Logger;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 
-import koolsoft.client.service.GreetingService;
 import koolsoft.client.service.GreetingServiceAsync;
 import koolsoft.shared.ContactInfo;
-import koolsoft.shared.FieldVerifier;
+import koolsoft.shared.ContactInfoCache;
 import koolsoft.shared.enums.ActionType;
-import koolsoft.shared.enums.SearchValidationResult;
-import koolsoft.shared.exception.ContactAlreadyExistsException;
-import koolsoft.shared.exception.ContactNoneExistsException;
+import koolsoft.shared.handler.ActionContactHomepageHandler;
+import koolsoft.shared.handler.LiveSearchContactHandler;
+import koolsoft.shared.handler.ServerSearchContactHandler;
+import koolsoft.shared.handler.UpdateContactHomepageHandler;
 
 public class HomePage extends Composite {
 	interface HomePageUiBinder extends UiBinder<Widget, HomePage> {}
     private static HomePageUiBinder uiBinder = GWT.create(HomePageUiBinder.class);
 	
-	private GreetingServiceAsync greetingService = null;
+	private GreetingServiceAsync greetingService ;
 	
 	private Set<ContactInfo> selectedContacts = null;
-	private ContactInfo selectedContact = null;
-	
-    @UiField
+	@UiField
+    
     TextBox searchBox;
 
     @UiField
-    Button searchButton;
+    Button liveSearchButton;
+    
+    @UiField
+    Button serverSearchButton;
     
     @UiField
     Element spinner; 
@@ -85,41 +73,26 @@ public class HomePage extends Composite {
 
     
     public HomePage(GreetingServiceAsync greetingService) {
-    	
-    	initWidget(uiBinder.createAndBindUi(this));
     	this.greetingService = greetingService;
+//    	initWidget(uiBinder.createAndBindUi(this));
+    	Widget widget = uiBinder.createAndBindUi(this);
+    	initWidget(widget);
 
         setupUI();
         setupHandlers();
     }
 
     private void setupUI() {
-    	
-    	// Khởi tạo các thành phần
-
-
-        // SearchBox
         searchBox.setText("");
+        
         addContactButton.setEnabled(true);
-
-        // Update Button
         updateContactButton.setEnabled(false);
-
-        // Delete Button
         deleteContactButton.setEnabled(false);
 
-//       CellTable setup
         setupContactTable();
     }
     
-    // Then use showSpinner(true) when starting an operation
-    // And showSpinner(false) when the operation completes
-       public void showSpinner(boolean show) {
-           // Only change display property, not visibility
-           spinner.getStyle().setDisplay(show ? Display.BLOCK : Display.NONE);
-       }
-    
-    private void setupContactTable() {
+	private void setupContactTable() {
         contactTable.setSelectionModel(multiSelectionModel, DefaultSelectionEventManager.<ContactInfo>createCheckboxManager());
         contactTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 
@@ -182,6 +155,7 @@ public class HomePage extends Composite {
 				dataProvider.getList().clear();
 				dataProvider.getList().addAll(result);
 				dataProvider.refresh();
+				ContactInfoCache.setCurrentContacts(result);
 			}
 		});
     }
@@ -194,145 +168,16 @@ public class HomePage extends Composite {
 	
 	}
 	
-	private void initSearchHandler() {
-		class SearchContactHandler implements ClickHandler, KeyUpHandler {
+	private void initSearchHandler() {		
+		//Add a handler to  server search button 
+		ServerSearchContactHandler serverSearchContactHandler = new ServerSearchContactHandler(dataProvider ,spinner
+				 ,  searchBox, errorLabel, greetingService);
+		serverSearchButton.addClickHandler(serverSearchContactHandler);
 
-			public void onClick(ClickEvent event) {
-				showSpinner(true);
-				// Add it to the root panel.
-				String keyword = searchBox.getText().trim();
-				GWT.log("send keyword: "+keyword+ " to server ");
-				sendNameToServer(keyword);
-			}
-
-			public void onKeyUp(KeyUpEvent event) {
-				showSpinner(true);
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					String keyword = searchBox.getText().trim();
-					GWT.log("send keyword: "+keyword+ " to server ");
-					sendNameToServer(keyword);
-				}
-			}
-
-			private void sendNameToServer(String keyword) {
-				// First, we validate the input.
-				errorLabel.setText("");
-				
-				SearchValidationResult fieldVerifier = FieldVerifier.isValidSearchKeyword(keyword);
-				
-				//ko du 4 ki tu 
-				if (fieldVerifier.equals(SearchValidationResult.TOO_SHORT)) {
-					errorLabel.setText("Please enter at least four characters");
-					return;
-				}
-				if (fieldVerifier.equals(SearchValidationResult.EMPTY)) {
-					// display all contact
-					greetingService.getAllContactInfos( new AsyncCallback<List<ContactInfo>>() {
-						public void onFailure(Throwable caught) {
-							showSpinner(false);
-							GWT.log("Error: get all contact from firstname from server");
-							Window.alert("Error fetching contacts by all name");
-						}
-
-						public void onSuccess(List<ContactInfo> result) {
-							showSpinner(false);
-							GWT.log("Success: get all contact from firstname from server");
-							dataProvider.getList().clear();
-							dataProvider.getList().addAll(result);
-							dataProvider.refresh();							
-						}
-					});							
-					return; 
-				}
-				if (fieldVerifier.equals(SearchValidationResult.VALID)) {
-					//search with criteria as firstname, fullname, phonenumber
-					searchWithFallback(keyword);
-				}		
-
-			}
-			
-			
-			private void searchWithFallback( String keyword) {
-			    showSpinner(true);
-			    searchByFirstName(keyword);
-			}
-			
-			private void searchByFirstName( String keyword) {
-			    greetingService.getContactInfosByFirstName(keyword, new AsyncCallback<List<ContactInfo>>() {
-			        public void onFailure(Throwable caught) {
-			        	if (caught instanceof ContactNoneExistsException) {
-							Window.alert("Error: " + caught.getMessage());
-						} else {
-							GWT.log("Error: unexpected error", caught);
-						}
-			            searchByFullName(keyword); // fallback
-			        }
-
-			        public void onSuccess(List<ContactInfo> result) {
-			            if (result != null && !result.isEmpty()) {
-			                handleResult(result, "first name");
-			            } else {
-			                searchByFullName(keyword); // fallback
-			            }
-			        }
-			    });
-			}
-			private void searchByFullName( String keyword) {
-			    greetingService.getContactInfosByFullName(keyword, new AsyncCallback<List<ContactInfo>>() {
-			        public void onFailure(Throwable caught) {
-			        	if (caught instanceof ContactNoneExistsException) {
-							Window.alert("Error: " + caught.getMessage());
-						} else {
-							GWT.log("Error: unexpected error", caught);
-						}
-			            searchByPhoneNumber(keyword); // fallback
-			        }
-
-			        public void onSuccess(List<ContactInfo> result) {
-			            if (result != null && !result.isEmpty()) {
-			                handleResult(result, "full name");
-			            } else {
-			                searchByPhoneNumber(keyword); // fallback
-			            }
-			        }
-			    });
-			}
-			private void searchByPhoneNumber( String keyword) {
-			    greetingService.getContactInfosByPhoneNumber(keyword, new AsyncCallback<ContactInfo>() {
-			        public void onFailure(Throwable caught) {
-			            showSpinner(false);
-			            GWT.log("Error searching by phone number", caught);
-			            Window.alert("No contacts found.");
-			        }
-
-			        public void onSuccess(ContactInfo result) {
-			            showSpinner(false);
-			            if (result != null) {
-			                List<ContactInfo> list = new ArrayList<>();
-			                list.add(result);
-			                handleResult(list, "phone number");
-			            } else {
-			                Window.alert("No contacts found.");
-			            }
-			        }
-			    });
-			}
-			
-			private void handleResult(List<ContactInfo> contacts, String criteria) {
-			    GWT.log("Success: found contacts by " + criteria);
-			    dataProvider.getList().clear();
-			    dataProvider.getList().addAll(contacts);
-			    dataProvider.refresh();
-			    showSpinner(false);
-			}
-		}
-		
-		
-		
-		//Add a handler to search button + search field
-		SearchContactHandler searchContactHandler = new SearchContactHandler();
-		searchButton.addClickHandler(searchContactHandler);
-		searchBox.addKeyUpHandler(searchContactHandler);
+		// Add a handler to live search button + search field
+		LiveSearchContactHandler liveSearchContactHandler = new LiveSearchContactHandler(dataProvider ,spinner
+				 ,  searchBox, errorLabel);
+		liveSearchButton.addClickHandler(liveSearchContactHandler);
 	}
 	
 	private void initSelectionModelHandler() {
@@ -345,19 +190,16 @@ public class HomePage extends Composite {
 		        	updateContactButton.setEnabled(false);
 		        	deleteContactButton.setEnabled(false);
 		        	addContactButton.setEnabled(true);
-		        	selectedContact = null;
 		        }
 		        else if (selectedContacts.size() == 1) {
 		        	updateContactButton.setEnabled(true);
 		        	deleteContactButton.setEnabled(true);
 		        	addContactButton.setEnabled(false);
-		        	selectedContact = selectedContacts.iterator().next();
 		        }
 		        else {
 		        	deleteContactButton.setEnabled(true);
 		        	updateContactButton.setEnabled(false);
 		        	addContactButton.setEnabled(false);
-		        	selectedContact = null;
 		        }
 		        
 		    }
@@ -365,63 +207,17 @@ public class HomePage extends Composite {
 	}
 	
 	private void initAddUpdateDeleteHandlers() {
-		// Add a handler to open the add info DialogBox
-		addContactButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
+		ActionContactHomepageHandler addContactHomepageHandler = new ActionContactHomepageHandler(dataProvider, multiSelectionModel, addContactButton,
+				greetingService, ActionType.ADD);
+		addContactButton.addClickHandler(addContactHomepageHandler );
 
-				// Tạo overlay element
-				SimplePanel overlay = new SimplePanel();
-				overlay.getElement().setId("dialogOverlay");
-				overlay.setStyleName("modal-overlay");
+		ActionContactHomepageHandler updateContactHomepageHandler = new ActionContactHomepageHandler(dataProvider, multiSelectionModel, updateContactButton, 
+				greetingService, ActionType.UPDATE);
+		updateContactButton.addClickHandler(updateContactHomepageHandler );
 
-				// Thêm overlay vào RootPanel trước khi hiển thị dialog
-				if (RootPanel.get().getWidgetIndex(overlay) == -1) {
-					RootPanel.get().add(overlay);
-				}
-
-				// Create the dialog
-				AddUpdateContactInfoDialog addContactInfoDialog = new AddUpdateContactInfoDialog(greetingService,
-						addContactButton, dataProvider, selectedContact, multiSelectionModel, ActionType.ADD, overlay);
-				addContactInfoDialog.showDialog();
-
-				addContactButton.setEnabled(false);
-
-			}
-		});
-
-		updateContactButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				// Tạo overlay element
-				SimplePanel overlay = new SimplePanel();
-				overlay.getElement().setId("dialogOverlay");
-				overlay.setStyleName("modal-overlay");
-
-				AddUpdateContactInfoDialog updateContactInfoDialog = new AddUpdateContactInfoDialog(greetingService,
-						updateContactButton, dataProvider, selectedContact, multiSelectionModel, ActionType.UPDATE,
-						overlay);
-				updateContactInfoDialog.showDialog();
-			}
-		});
-
-		deleteContactButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				// Tạo overlay element
-				SimplePanel overlay = new SimplePanel();
-				overlay.getElement().setId("dialogOverlay");
-				overlay.setStyleName("modal-overlay");
-				
-				// Create the dialog	
-				DeleteContactInfoDialog deleteContactInfoDialog = new DeleteContactInfoDialog(greetingService, deleteContactButton,
-						dataProvider,selectedContacts, multiSelectionModel, overlay);
-				
-				deleteContactInfoDialog.showDialog();
-
-
-			}
-		});
+		ActionContactHomepageHandler deleteContactHomepageHandler = new ActionContactHomepageHandler(dataProvider, multiSelectionModel, deleteContactButton, 
+				greetingService, ActionType.DELETE);
+		deleteContactButton.addClickHandler(deleteContactHomepageHandler );
 	}
 	
 	

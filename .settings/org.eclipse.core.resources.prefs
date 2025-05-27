@@ -1,7 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/koolsoft/client/Demo2.java=UTF-8
-encoding//src/koolsoft/client/view/AddUpdateContactInfoDialog.java=UTF-8
-encoding//src/koolsoft/client/view/DeleteContactInfoDialog.java=UTF-8
+encoding//src/koolsoft/client/view/AddUpdateContactDialog.java=UTF-8
+encoding//src/koolsoft/client/view/DeleteContactDialog.java=UTF-8
 encoding//src/koolsoft/client/view/HomePage.java=UTF-8
 encoding//src/koolsoft/server/GreetingServiceImpl.java=UTF-8
 encoding//src/koolsoft/server/MyObjectifyDB.java=UTF-8

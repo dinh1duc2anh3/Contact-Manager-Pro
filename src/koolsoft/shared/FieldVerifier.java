@@ -1,6 +1,5 @@
 package koolsoft.shared;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
 import koolsoft.shared.enums.SearchValidationResult;

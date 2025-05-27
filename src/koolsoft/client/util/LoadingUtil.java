@@ -2,8 +2,6 @@ package koolsoft.client.util;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.DOM;
 
 public class LoadingUtil {
 	public static void showSpinner() {

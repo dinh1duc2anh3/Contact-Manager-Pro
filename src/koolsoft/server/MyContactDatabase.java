@@ -2,14 +2,8 @@ package koolsoft.server;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Constants;
-import com.google.gwt.view.client.ListDataProvider;
-
-import koolsoft.server.mapper.ContactInfoMapper;
 import koolsoft.shared.ContactInfo;
 
 public class MyContactDatabase {

@@ -7,7 +7,8 @@
     <!-- Search -->
     <g:HorizontalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER"  verticalAlignment="middle" styleName="search-panel">
       	<g:TextBox ui:field="searchBox" width="300px" styleName="form-control"/>
-      	<g:Button ui:field="searchButton" text="Search" styleName="btn btn-primary "/>
+      	<g:Button ui:field="liveSearchButton" text="Live Search" styleName="btn btn-primary "/>
+      	<g:Button ui:field="serverSearchButton" text="Server Search" styleName="btn btn-primary "/>
 		 <!-- Simple panel to hold the spinner -->
 		 <g:HTMLPanel width="30px" height="30px">
 	        <div ui:field="spinnerContainer" style="width:30px; height:30px; display:flex; align-items:center; justify-content:center;">
