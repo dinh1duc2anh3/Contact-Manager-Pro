@@ -127,7 +127,7 @@ contact-manager-pro/
 
 ### Add/Edit Contact Dialog
 *Intuitive form design with real-time validation*
-![Add/Edit Contact Dialog](assets/edit-dialog.png)
+![Add/Edit Contact Dialog](assets/update-dialog.png)
 
 ## 🚀 Under-the-Hood Features
 
