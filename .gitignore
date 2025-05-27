@@ -21,6 +21,7 @@ war/*
 # But keep your manually written files
 !war/Demo2.html
 !war/Demo2.css
+!war/WEB-INF/web.xml
 !war/your-custom.js  # replace with real name if you have handwritten JS
 
 # Prevent compiled JS from being tracked
