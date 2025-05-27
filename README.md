@@ -89,26 +89,6 @@ contact-manager-pro/
 └── pom.xml                         # Maven configuration
 ```
 
-## 🎨 Design Showcase
-
-### Color Palette
-- **Primary**: `#667eea` (Modern Blue)
-- **Secondary**: `#764ba2` (Purple Accent)
-- **Success**: `#48bb78` (Green)
-- **Warning**: `#ed8936` (Orange)
-- **Danger**: `#f56565` (Red)
-
-### Typography
-- **Font Family**: Inter (Google Fonts)
-- **Weights**: 300, 400, 500, 600, 700
-- **Responsive Scaling**: Fluid typography for all screen sizes
-
-### Visual Elements
-- **Gradient Backgrounds** for modern appeal
-- **Glass-morphism Effects** with backdrop blur
-- **Smooth Animations** using CSS transitions and keyframes
-- **Professional Shadows** with layered depth
-
 ## 💻 Installation & Setup
 
 ### Prerequisites
@@ -143,15 +123,11 @@ contact-manager-pro/
 
 ### Main Interface
 *Modern contact management interface with professional styling*
+![Main Interface](assets/main-interface.png)
 
 ### Add/Edit Contact Dialog
 *Intuitive form design with real-time validation*
-
-### Responsive Mobile View
-*Optimized mobile experience with touch-friendly controls*
-
-### Search Functionality
-*Live search with both client and server-side filtering*
+![Add/Edit Contact Dialog](assets/edit-dialog.png)
 
 ## 🚀 Under-the-Hood Features
 
