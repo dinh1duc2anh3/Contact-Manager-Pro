@@ -120,7 +120,7 @@ contact-manager-pro/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/contact-manager-pro.git
+   git clone https://github.com/dinh1duc2anh3/Contact-Manager-Pro.git
    cd contact-manager-pro
    ```
 
@@ -139,20 +139,6 @@ contact-manager-pro/
    http://localhost:8888/Demo2.html
    ```
 
-### Development Mode
-
-For development with hot reload:
-```bash
-mvn gwt:devmode
-```
-
-### Production Build
-
-To create an optimized production build:
-```bash
-mvn clean package
-```
-
 ## 🖥️ Screenshots
 
 ### Main Interface
@@ -167,25 +153,38 @@ mvn clean package
 ### Search Functionality
 *Live search with both client and server-side filtering*
 
-## 🎯 Technical Achievements
+## 🚀 Under-the-Hood Features
 
-### Frontend Excellence
-- **Modern CSS Architecture** with custom properties and responsive design
-- **Advanced Animation System** using CSS keyframes and transitions
-- **Component-Based Architecture** with reusable UiBinder templates
-- **Performance Optimization** with efficient DOM manipulation
+Beyond its polished UI, **Contact Manager Pro** offers robust, enterprise-level backend logic and data handling capabilities:
 
-### UX/UI Innovation
-- **Professional Design System** with consistent visual language
-- **Micro-Interactions** that enhance user engagement
-- **Accessibility Features** with proper focus management and keyboard navigation
-- **Cross-Browser Compatibility** tested across major browsers
+### ✅ Data Operations with Validation
 
-### Code Quality
-- **Clean Code Principles** with proper separation of concerns
-- **Modular Design** with reusable components
-- **Best Practices** following GWT and web development standards
-- **Documentation** with comprehensive inline comments
+* **Add & Update Contacts** with:
+
+  * **Format validation** (e.g. phone number, name fields)
+  * **Duplicate prevention** (e.g. checks if phone number already exists before saving)
+* **Delete with Confirmation** ensures safe record removal
+
+### 🔎 Flexible Search System
+
+* **Search by multiple criteria**: first name, full name, or phone number
+* **Switchable modes**: toggle between **Live Search (client-side)** and **Server-side Search**
+* **Optimized filtering** using efficient string matching and RPC queries
+
+### ☁️ Cloud-Based Data Storage
+
+* **Google Cloud Datastore** integration for persistent storage
+* Uses **Objectify** for simplified, type-safe data access
+* Clean separation of concerns via **client-server RPC communication**
+
+### ⚙️ Application Architecture
+
+* Fully **asynchronous RPC calls** for responsive interactions
+* **Logger integration** to monitor and debug client-server actions
+* Clear **modular architecture**:
+
+  * Clean separation of UI, Presenter, and Model layers
+  * Code organized by feature and responsibility
 
 ## 🚀 Future Enhancements
 
@@ -204,42 +203,9 @@ mvn clean package
 - [ ] **Progressive Web App** features
 - [ ] **Dark Mode** theme option
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit issues, feature requests, or pull requests.
-
-### Development Guidelines
-1. Follow existing code style and patterns
-2. Write clear, descriptive commit messages
-3. Update documentation for new features
-4. Test across different browsers and devices
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👨‍💻 About the Developer
-
-This project showcases modern web development skills including:
-- **Frontend Architecture** with GWT framework
-- **UI/UX Design** with modern CSS techniques
-- **Responsive Development** for cross-device compatibility
-- **Professional Coding Practices** with clean, maintainable code
-
 ### Connect with Me
-- 💼 **LinkedIn**: [Your LinkedIn Profile]
-- 🐙 **GitHub**: [Your GitHub Profile]
-- 🌐 **Portfolio**: [Your Portfolio Website]
-- 📧 **Email**: [your.email@example.com]
-
----
-
-## 🙏 Acknowledgments
-
-- **Google Web Toolkit Team** for the excellent framework
-- **Inter Font Family** by Rasmus Andersson
-- **Bootstrap Team** for responsive utilities
-- **Modern CSS Community** for design inspiration
+- 🐙 **GitHub**: https://github.com/dinh1duc2anh3
+- 📧 **Email**: dinh1duc2anh3@gmail.com
 
 ---
 
