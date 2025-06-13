@@ -1,0 +1,11 @@
+.settings/
+gwt-unitCache/
+target/
+war/WEB-INF/lib/
+war/WEB-INF/classes/
+war/META-INF/
+war/gwt_basic/**/*.nocache.js
+war/gwt_basic/**/*.cache.css
+war/gwt_basic/**/*.cache.html
+war/gwt_basic/**/*.nocache.html
+war/gwt_basic/gwt/         # GWT theme resources if compiled

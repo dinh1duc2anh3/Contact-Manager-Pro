@@ -1,0 +1,18 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:gwtbootstrap3="urn:import:org.gwtbootstrap3.client.ui">
+	<ui:style>
+	.paddingWidget {
+		margin: 10px;
+	}
+	</ui:style>
+	<g:HTMLPanel>
+		Hello home page
+		<div style="width: 200px; padding: 10px">
+			<gwtbootstrap3:TextBox ui:field="tbName" addStyleNames="{style.paddingWidget}"></gwtbootstrap3:TextBox>
+			<gwtbootstrap3:TextBox ui:field="tbAdress" addStyleNames="{style.paddingWidget}" ></gwtbootstrap3:TextBox>
+			<gwtbootstrap3:Button ui:field="btnSend" addStyleNames="{style.paddingWidget}" >Send contact</gwtbootstrap3:Button>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

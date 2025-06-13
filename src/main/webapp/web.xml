@@ -1,0 +1,11 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         version="3.1">
+  <servlet>
+    <servlet-name>gwtServlet</servlet-name>
+    <servlet-class>com.google.gwt.user.server.rpc.RemoteServiceServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>gwtServlet</servlet-name>
+    <url-pattern>/yourService</url-pattern>
+  </servlet-mapping>
+</web-app>

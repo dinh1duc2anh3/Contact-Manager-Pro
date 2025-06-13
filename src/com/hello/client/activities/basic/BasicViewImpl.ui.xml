@@ -1,0 +1,20 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+	xmlns:basic="urn:import:com.hello.client.activities.basic.widget">
+	<ui:style>
+		.fixedButton {
+			position: fixed;
+			top: 100px;
+			right: 50px;
+		}
+	</ui:style>
+	<g:HTMLPanel ui:field="mainPanel" addStyleNames="main-page-panel">
+		<basic:HeaderPanel ui:field="headerPanel"></basic:HeaderPanel>
+		<g:HTMLPanel styleName="main-body-panel student-panel" ui:field="panelContentBasic">
+			<g:FlowPanel ui:field="containerPanel" styleName="container-panel"></g:FlowPanel>
+		</g:HTMLPanel>
+		<basic:FooterPanel ui:field="footerPanel"></basic:FooterPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 
