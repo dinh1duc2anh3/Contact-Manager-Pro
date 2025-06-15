@@ -17,6 +17,7 @@ import com.hello.shared.model.ContactInfo;
 import com.hello.shared.cache.ContactInfoCache;
 import com.hello.shared.verifier.ContactInfoVerifier;
 import com.hello.shared.enums.ActionType;
+import com.hello.shared.enums.Address;
 import com.hello.shared.exception.ContactAlreadyExistsException;
 import com.hello.shared.exception.ContactNoneExistsException;
 
@@ -69,10 +70,10 @@ public class AddUpdateContactActivity {
 		String fn = view.getFirstNameBox().getText().trim();
 		String ln = view.getLastNameBox().getText().trim();
 		String pn = view.getPhoneNumberBox().getText().trim();
-		String ad = view.getAddressBox().getText().trim();
+		Address ad = view.getAddressValueListBox().getValue();
 
 		// validate input
-		if (!ContactInfoVerifier.contactInfoVerifier(fn, ln, pn, ad)) {
+		if (!ContactInfoVerifier.contactInfoVerifier(fn, ln, pn, ad.toString())) {
 			GWT.log("Error: validate contact info ");
 			return;
 		} else

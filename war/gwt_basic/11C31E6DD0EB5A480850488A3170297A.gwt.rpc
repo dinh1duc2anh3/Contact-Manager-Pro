@@ -3,10 +3,11 @@ com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException, true, true, t
 com.google.gwt.user.client.rpc.RpcTokenException, true, true, false, false, com.google.gwt.user.client.rpc.RpcTokenException/2345075298, 2345075298
 com.google.gwt.user.client.rpc.XsrfToken, false, false, true, true, com.google.gwt.user.client.rpc.XsrfToken/4254043109, 4254043109
 com.hello.client.GreetingService, false, false, false, false, _, 1118296909
+com.hello.shared.enums.Address, true, true, true, true, com.hello.shared.enums.Address/4066104751, 4066104751
 com.hello.shared.exception.ContactAlreadyExistsException, true, true, false, false, com.hello.shared.exception.ContactAlreadyExistsException/4071964296, 4071964296
 com.hello.shared.exception.ContactNoneExistsException, true, true, false, false, com.hello.shared.exception.ContactNoneExistsException/1051777277, 1051777277
-com.hello.shared.model.ContactInfo, true, true, true, true, com.hello.shared.model.ContactInfo/3087141531, 3087141531
-[Lcom.hello.shared.model.ContactInfo;, true, true, false, false, [Lcom.hello.shared.model.ContactInfo;/2735394106, 2735394106
+com.hello.shared.model.ContactInfo, true, true, true, true, com.hello.shared.model.ContactInfo/3433183409, 3433183409
+[Lcom.hello.shared.model.ContactInfo;, true, true, false, false, [Lcom.hello.shared.model.ContactInfo;/4109748584, 4109748584
 java.lang.Exception, true, false, true, false, java.lang.Exception/1920171873, 1920171873
 java.lang.IllegalArgumentException, true, true, false, false, java.lang.IllegalArgumentException/1755012560, 1755012560
 java.lang.NumberFormatException, true, true, false, false, java.lang.NumberFormatException/3305228476, 3305228476

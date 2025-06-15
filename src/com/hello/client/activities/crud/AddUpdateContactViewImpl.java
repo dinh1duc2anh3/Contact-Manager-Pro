@@ -1,17 +1,23 @@
 package com.hello.client.activities.crud;
 
+import java.util.Arrays;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.text.shared.AbstractRenderer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.hello.client.activities.basic.BasicViewImpl;
+import com.hello.shared.enums.Address;
 import com.hello.shared.model.ContactInfo;
 import com.hello.shared.utils.OverlayUtil;
 
@@ -21,18 +27,30 @@ public class AddUpdateContactViewImpl extends BasicViewImpl implements AddUpdate
 	interface AddUpdateContactViewImplUiBinder extends UiBinder<Widget, AddUpdateContactViewImpl> {
 	}
 	
-	public AddUpdateContactViewImpl() {
-		this.layout.getContainerPanel().add((uiBinder.createAndBindUi(this)));
-	}
+	
 	
 	private SimplePanel overlay;
 	@UiField DialogBox dialogBox;
 	@UiField TextBox firstNameBox;
 	@UiField TextBox lastNameBox;
 	@UiField TextBox phoneNumberBox;
-	@UiField TextBox addressBox;
+//	@UiField ListBox addressListBox;
+	@UiField(provided = true) ValueListBox<Address> addressValueListBox;
 	@UiField Button actionButton; // "Add" hoặc "Update"
 	@UiField Button closeButton;// button mở dialog ("Add Contact" hoặc "Update Contact")
+	
+	
+	public AddUpdateContactViewImpl() {
+		addressValueListBox = new ValueListBox<Address>(new AbstractRenderer<Address>() {
+	        @Override
+	        public String render(Address address) {
+	            return address == null ? "Chọn địa chỉ" : address.toString(); // hoặc .getDisplayName()
+	        }
+	    });
+		
+		
+		this.layout.getContainerPanel().add((uiBinder.createAndBindUi(this)));
+	}
 	
 	@Override
 	public SimplePanel getOverlay() {
@@ -65,8 +83,8 @@ public class AddUpdateContactViewImpl extends BasicViewImpl implements AddUpdate
 	}
 
 	@Override
-	public TextBox getAddressBox() {
-		return addressBox;
+	public ValueListBox<Address> getAddressValueListBox() {
+		return addressValueListBox;
 	}
 
 	@Override
@@ -107,6 +125,10 @@ public class AddUpdateContactViewImpl extends BasicViewImpl implements AddUpdate
 	@Override
 	public void showDialogBox(ContactInfo selectedContact) {
 		OverlayUtil.displayOverlay(overlay);
+		addressValueListBox.setValue(null);
+	    addressValueListBox.setAcceptableValues(Arrays.asList(Address.values()));
+		
+		
 		
 		if (selectedContact == null) {
 			actionButton.setText("Add");
@@ -116,7 +138,7 @@ public class AddUpdateContactViewImpl extends BasicViewImpl implements AddUpdate
 			firstNameBox.setText(selectedContact.getFirstName());
 			lastNameBox.setText(selectedContact.getLastName());
 			phoneNumberBox.setText(selectedContact.getPhoneNumber());
-			addressBox.setText(selectedContact.getAddress());
+			addressValueListBox.setValue(selectedContact.getAddress());
 		}
 		dialogBox.center();
 		dialogBox.show();
@@ -129,8 +151,7 @@ public class AddUpdateContactViewImpl extends BasicViewImpl implements AddUpdate
 		firstNameBox.setText("");
 		lastNameBox.setText("");
 		phoneNumberBox.setText("");
-		addressBox.setText("");
-		
+		addressValueListBox.setValue(null);
 	}
 
 	

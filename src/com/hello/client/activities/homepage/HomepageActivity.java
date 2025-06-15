@@ -120,7 +120,7 @@ public class HomepageActivity extends BasicActivity {
         TextColumn<ContactInfo> addressColumn = new TextColumn<ContactInfo>() {
             @Override
             public String getValue(ContactInfo object) {
-                return object.getAddress();
+                return object.getAddressStr();
             }
         };
         contactTable.addColumn(addressColumn, "Address");

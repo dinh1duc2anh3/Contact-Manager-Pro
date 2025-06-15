@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.hello.shared.enums.Address;
 import com.hello.shared.formatter.ContactInfoFormatter;
 
 @Entity
@@ -24,12 +25,15 @@ public class ContactInfo implements Serializable, IsSerializable {
     @Id
     private String phoneNumber;
 
-    private String address;
+    private Address address;
     public ContactInfo() {} // GWT RPC cần constructor rỗng
 
 	//create new contact info 
-	public ContactInfo(String firstName, String lastName, String phoneNumber, String address
-			) {
+	public ContactInfo(
+			String firstName, 
+			String lastName, 
+			String phoneNumber, 
+			Address address) {
 		this.firstName = ContactInfoFormatter.formatName(firstName);
 		this.lastName = ContactInfoFormatter.formatName(lastName);
 		this.fullName = ContactInfoFormatter.formatName(firstName + " " + lastName) ;
@@ -76,10 +80,15 @@ public class ContactInfo implements Serializable, IsSerializable {
 		return lastName;
 	}
 
-	public String getAddress() {
+	public Address getAddress() {
 		return address;
 	}
-	public void setAddress(String address) {
+	
+	public String getAddressStr() {
+		return address.toString();
+	}
+	
+	public void setAddress(Address address) {
 		this.address = address;
 	}
 	public void setPhoneNumber(String phoneNumber) {

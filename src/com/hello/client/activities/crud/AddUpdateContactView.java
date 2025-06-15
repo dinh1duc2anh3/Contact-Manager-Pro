@@ -3,9 +3,12 @@ package com.hello.client.activities.crud;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.view.client.MultiSelectionModel;
+import com.hello.shared.enums.Address;
 import com.hello.shared.model.ContactInfo;
 
 public interface AddUpdateContactView {
@@ -15,7 +18,7 @@ public interface AddUpdateContactView {
 	TextBox getFirstNameBox();
 	TextBox getLastNameBox();
 	TextBox getPhoneNumberBox();
-	TextBox getAddressBox();
+	ValueListBox<Address> getAddressValueListBox();
 	Button getActionButton(); 
 	Button getCloseButton();
 	void showDialogBox(ContactInfo selectedContact);

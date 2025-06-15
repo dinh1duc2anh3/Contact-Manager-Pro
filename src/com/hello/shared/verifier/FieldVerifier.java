@@ -39,11 +39,11 @@ public class FieldVerifier {
 	}
 	
 	public static Boolean isValidAddress(String address) {
-		if (address == null || address.length() < 3 || address.length() > 25) {
-			Window.alert("Error: address is invalid,  min 3 , max 25 char");
-			return false; //not ok  null / <3 / >15
+		if (address == null || address.isEmpty() ) {
+			Window.alert("Error: address is invalid, selected at least 1 address");
+			return false; //not ok  
 		}
-		return true; //oke >3 <15
+		return true; //oke 
 		
 	}
 }

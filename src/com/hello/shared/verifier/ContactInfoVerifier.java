@@ -20,7 +20,7 @@ public class ContactInfoVerifier {
 		if (!phoneNumberAddVerifier) {
 			return false;
 		}
-
+		
 		Boolean addressAddVerifier = FieldVerifier.isValidAddress(ad);
 		if (!addressAddVerifier) {
 			return false;
