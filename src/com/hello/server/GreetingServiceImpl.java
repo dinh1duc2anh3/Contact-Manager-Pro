@@ -9,8 +9,7 @@ import com.hello.shared.exception.ContactAlreadyExistsException;
 import com.hello.shared.exception.ContactNoneExistsException;
 
 import java.util.List;
-
-
+import java.util.logging.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -21,6 +20,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
 
 
+	private static final Logger log = Logger.getLogger(GreetingServiceImpl.class.getName());
+	
 	private MyObjectifyDB myDB = new MyObjectifyDB();
 
 	
@@ -84,7 +85,13 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     @Override
 	public void addContactInfo(ContactInfo newContact) throws ContactAlreadyExistsException {
-        myDB.add(newContact);
+
+		
+		if (myDB.findByPhoneNumber(newContact.getPhoneNumber()) != null ) {
+			log.warning("Error: Contact"+ newContact.getFirstName() + newContact.getLastName() + newContact.getPhoneNumber() + "already exists");
+			throw new ContactAlreadyExistsException("This contact already exists.");
+		}
+    	myDB.add(newContact);
     	
         return;
     }

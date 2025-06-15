@@ -143,11 +143,8 @@ public class HomepageActivity extends BasicActivity {
     private void initSearchHandler() {	
     	
     	view.getSearchBox().getTextBox().addKeyUpHandler(new KeyUpHandler() {
-			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-				// TODO Auto-generated method stub
-				String keyword = view.getSearchBox().getText();
 				view.getSpinner().getStyle().setDisplay(Display.BLOCK);
 				
 				// Hide spinner after a short delay if needed
@@ -225,13 +222,14 @@ public class HomepageActivity extends BasicActivity {
                 dataProvider.getList().clear();
                 dataProvider.getList().addAll(result);
                 dataProvider.refresh();
+                
                 ContactInfoCache.setCurrentContacts(result);
                 
                 MultiWordSuggestOracle oracle =  (MultiWordSuggestOracle ) view.getSearchBox().getSuggestOracle() ;
                 for (ContactInfo contact : ContactInfoCache.getCurrentContacts()) {
-                	String firstName = contact.getFirstName();
-                	if (firstName != null && !firstName.isEmpty()) {
-                	    oracle.add(firstName);
+                	String fullName = contact.getFullName();
+                	if (fullName != null && !fullName.isEmpty()) {
+                	    oracle.add(fullName);
                 	}
 
                 	String phone = contact.getPhoneNumber();

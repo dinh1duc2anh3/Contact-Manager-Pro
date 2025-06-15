@@ -8,6 +8,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -21,32 +22,25 @@ public class HomepageViewImpl extends Composite implements HomepageView {
 
     private static HomepageViewImplUiBinder uiBinder = GWT.create(HomepageViewImplUiBinder.class);
 
-    @UiField
-    SuggestBox searchBox;
+    @UiField ScrollPanel tableScrollPanel;
+    
+    @UiField SuggestBox searchBox;
 
-    @UiField
-    Button liveSearchButton;
+    @UiField Button liveSearchButton;
 
-    @UiField
-    Button serverSearchButton;
+    @UiField Button serverSearchButton;
 
-    @UiField
-    Element spinner;
+    @UiField Element spinner;
 
-    @UiField
-    Button addContactButton;
+    @UiField Button addContactButton;
 
-    @UiField
-    Button updateContactButton;
+    @UiField Button updateContactButton;
 
-    @UiField
-    Button deleteContactButton;
+    @UiField Button deleteContactButton;
 
-    @UiField
-    Label errorLabel;
+    @UiField Label errorLabel;
 
-    @UiField
-    CellTable<ContactInfo> contactTable;
+    @UiField CellTable<ContactInfo> contactTable;
 
     private final MultiSelectionModel<ContactInfo> selectionModel = new MultiSelectionModel<>();
 
@@ -55,6 +49,11 @@ public class HomepageViewImpl extends Composite implements HomepageView {
     }
 
     @Override
+	public ScrollPanel getTableScrollPanel() {
+		return tableScrollPanel;
+	}
+
+	@Override
     public SuggestBox getSearchBox() {
         return searchBox;
     }

@@ -1,5 +1,6 @@
 package com.hello.server;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -11,7 +12,7 @@ import com.hello.shared.exception.ContactNoneExistsException;
 
 public class MyObjectifyDB implements MyDB  {
 	
-	private static final Logger logger = Logger.getLogger(MyObjectifyDB.class.getName());
+	private static final Logger log = Logger.getLogger(MyObjectifyDB.class.getName());
 	
 	
 	public void loadInit() {
@@ -34,9 +35,10 @@ public class MyObjectifyDB implements MyDB  {
 	    List<ContactInfo> contactDTOs = ContactInfoMapper.toDTOList(contacts);
 	    System.out.println("Total contacts in Datastore: " + contactDTOs.size());
 	    for (ContactInfo contactDTO : contactDTOs) {
-	        System.out.println(contactDTO.getFirstName() + " " + contactDTO.getLastName() + 
-	        		" - " + contactDTO.getFirstName()+ " -"  + contactDTO.getFullName()+ 
-	        		"- " + contactDTO.getPhoneNumber());
+	        System.out.println(contactDTO.getFirstName() + 
+	        		" - " + contactDTO.getLastName() + 
+	        		" - " + contactDTO.getPhoneNumber() + 
+	        		" - " + contactDTO.getAddress());
 	    }
 	}
 	
@@ -60,27 +62,41 @@ public class MyObjectifyDB implements MyDB  {
 	
 	@Override
 	public List<ContactInfo> findByFirstName(String firstname_format) throws ContactNoneExistsException  {
-		List<ContactInfo> entities = ObjectifyService.ofy().load().type(ContactInfo.class)
-                .filter("firstName =", firstname_format)
-                .list();
-		
-		if (entities == null || entities.isEmpty()) {
-			throw new ContactNoneExistsException("Can't find contact from firstname: "+firstname_format+ " doesn't exist.");
-		}
-        return ContactInfoMapper.toDTOList(entities);
+		List<ContactInfo> allContacts = ObjectifyService.ofy().load().type(ContactInfo.class).list();
+        // Filter manually using contains (case-insensitive)
+        List<ContactInfo> filtered = new ArrayList<>();
+        for (ContactInfo contact : allContacts) {
+            if (contact.getFirstName() != null &&
+                contact.getFirstName().toLowerCase().contains(firstname_format.toLowerCase())) {
+                filtered.add(contact);
+            }
+        }
+
+        if (filtered.isEmpty()) {
+            throw new ContactNoneExistsException("Can't find contact from firstname: " + firstname_format);
+        }
+
+        return ContactInfoMapper.toDTOList(filtered);
         
 	}
 
 	@Override
 	public List<ContactInfo> findByFullName(String fullname_format) throws ContactNoneExistsException {
-		List<ContactInfo> entities = ObjectifyService.ofy().load().type(ContactInfo.class)
-                .filter("fullName =", fullname_format)
-                .list();
-		if (entities == null || entities.isEmpty()) {
-			throw new ContactNoneExistsException("Can't find contact from firstname: "+fullname_format+ " doesn't exist.");
-		}
-		
-        return ContactInfoMapper.toDTOList(entities);
+        List<ContactInfo> allContacts = ObjectifyService.ofy().load().type(ContactInfo.class).list();
+        // Filter manually using contains (case-insensitive)
+        List<ContactInfo> filtered = new ArrayList<>();
+        for (ContactInfo contact : allContacts) {
+            if (contact.getFullName() != null &&
+                contact.getFullName().toLowerCase().contains(fullname_format.toLowerCase())) {
+                filtered.add(contact);
+            }
+        }
+
+        if (filtered.isEmpty()) {
+            throw new ContactNoneExistsException("Can't find contact from fullname: " + fullname_format);
+        }
+
+        return ContactInfoMapper.toDTOList(filtered);
 	}
 	
 	@Override
@@ -96,14 +112,8 @@ public class MyObjectifyDB implements MyDB  {
 	@Override
 	public void add(ContactInfo contactInfo) throws ContactAlreadyExistsException {
 		
-		
-		if (findByPhoneNumber(contactInfo.getPhoneNumber()) != null ) {
-			logger.warning("Error: Contact"+ contactInfo.getFirstName() + contactInfo.getLastName() + contactInfo.getPhoneNumber() + "already exists");
-			throw new ContactAlreadyExistsException("This contact already exists.");
-		}
-		
-		System.out.println("adding contact: " + contactInfo.getFirstName() + contactInfo.getLastName() + contactInfo.getPhoneNumber());
 		ObjectifyService.ofy().save().entity(contactInfo).now();
+		log.info("success added contact: " + contactInfo.getFirstName() + contactInfo.getLastName() + contactInfo.getPhoneNumber());
 		return ;
 	}
 
@@ -130,7 +140,7 @@ public class MyObjectifyDB implements MyDB  {
 		
 		//exist + =
 		ObjectifyService.ofy().save().entity(updatedContact).now();
-		logger.info("Success: Updated contact info of " + selectedContact.getFirstName() + " " + selectedContact.getLastName());
+		log.info("Success: Updated contact info of " + selectedContact.getFirstName() + " " + selectedContact.getLastName());
 		return ;
 	}
 	
@@ -140,12 +150,12 @@ public class MyObjectifyDB implements MyDB  {
 		ContactInfo existing = findByPhoneNumber(phoneNumber);
 		
 		if (existing == null) {
-			logger.severe("Error: Phone number does not exist - " + phoneNumber);
+			log.severe("Error: Phone number does not exist - " + phoneNumber);
 			throw new ContactNoneExistsException("Selected phone number: "+phoneNumber+ " doesn't exist.");
 		}
 		
 		ObjectifyService.ofy().delete().entity(existing).now();
-		logger.info("Successfully deleted contact info for phone number " + phoneNumber);
+		log.info("Successfully deleted contact info for phone number " + phoneNumber);
 		return ;
 		
 	}

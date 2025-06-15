@@ -106,10 +106,14 @@ public class AddUpdateContactActivity {
 			}
 
 			public void onSuccess(Void result) {
-				GWT.log("Success: adding contact info");
-				ContactInfoCache.addContact(newContactInfo);
+				GWT.log("AddUpdateContactActivity: Successfully add contact"+ newContactInfo.getFullName());
+				Window.alert("Successfully add contact"+newContactInfo.getFullName());
+				
 				dataProvider.getList().add(newContactInfo);
 				dataProvider.refresh();
+				
+				ContactInfoCache.addContact(newContactInfo);
+				
 				
 				closeDialog();
 			}
@@ -136,11 +140,15 @@ public class AddUpdateContactActivity {
 
 			@Override
 			public void onSuccess(Void result) {
+				GWT.log("AddUpdateContactActivity: Successfully update contact"+updatedContact.getFullName());
+				Window.alert("Successfully update contact"+updatedContact.getFullName());
+				
 				dataProvider.getList().remove(selectedContact);
 				dataProvider.getList().add(updatedContact);
+				dataProvider.refresh();
 				ContactInfoCache.removeContact(selectedContact);
 				ContactInfoCache.addContact(updatedContact);
-				dataProvider.refresh();
+				
 				closeDialog();
 			}
 		});

@@ -79,17 +79,23 @@ public class LiveSearchContactHandler implements ClickHandler{
 					
 		}
 		if (fieldVerifier.equals(SearchValidationResult.VALID)) {
-			//search with criteria as firstname, fullname, phonenumber
 			List<ContactInfo> filterContactList = new ArrayList<>();
 
 			for (ContactInfo contact : ContactInfoCache.getCurrentContacts()) {
-				if (keyword.equalsIgnoreCase(contact.getFirstName())) {
+				String lowerKeyword = keyword.toLowerCase();
+
+				boolean matchFirstName = contact.getFirstName() != null && contact.getFirstName().toLowerCase().contains(lowerKeyword);
+				boolean matchFullName = contact.getFullName() != null && contact.getFullName().toLowerCase().contains(lowerKeyword);
+				boolean matchPhone = contact.getPhoneNumber() != null && contact.getPhoneNumber().toLowerCase().contains(lowerKeyword);
+
+				if (matchFirstName || matchFullName || matchPhone) {
 					filterContactList.add(contact);
 				}
 			}
+
 			GWT.log("Success: showing " + filterContactList.size() + " filtered contacts");
 			dataProvider.getList().addAll(filterContactList);
-		}		
+		}
 		dataProvider.refresh();
 	}
 	
