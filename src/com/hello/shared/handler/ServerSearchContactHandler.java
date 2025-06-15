@@ -11,6 +11,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.ListDataProvider;
 
@@ -25,13 +26,13 @@ public class ServerSearchContactHandler implements ClickHandler {
 
 	private ListDataProvider<ContactInfo> dataProvider = new ListDataProvider<>();
 	private Element spinner; 
-	private TextBox searchBox;
+	private SuggestBox searchBox;
 	private Label errorLabel;
 	
 	private GreetingServiceAsync greetingService = null;
 	
 	public ServerSearchContactHandler(ListDataProvider<ContactInfo> dataProvider ,Element spinner
-			 , TextBox searchBox, Label errorLabel,GreetingServiceAsync greetingService ) {
+			 , SuggestBox searchBox, Label errorLabel,GreetingServiceAsync greetingService ) {
 		this.dataProvider = dataProvider;
 		this.spinner = spinner;
 		this.searchBox = searchBox; 

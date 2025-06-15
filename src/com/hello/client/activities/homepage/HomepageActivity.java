@@ -2,21 +2,34 @@ package com.hello.client.activities.homepage;
 
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.googlecode.mgwt.mvp.client.MGWTAbstractActivity;
+import com.hello.client.ClientUtils;
 import com.hello.client.GreetingServiceAsync;
 import com.hello.client.activities.ClientFactory;
+import com.hello.client.activities.basic.BasicActivity;
+import com.hello.client.activities.contact.ContactPlace;
+import com.hello.client.activities.home.HomeView;
 import com.hello.shared.model.ContactInfo;
+import com.hello.shared.model.User;
 import com.hello.shared.cache.ContactInfoCache;
 import com.hello.shared.enums.ActionType;
 import com.hello.shared.handler.ActionContactHomepageHandler;
@@ -26,33 +39,33 @@ import com.hello.shared.handler.ServerSearchContactHandler;
 import java.util.List;
 import java.util.Set;
 
-public class HomepageActivity extends MGWTAbstractActivity {
+public class HomepageActivity extends BasicActivity {
 
-    private final ClientFactory clientFactory; // Assume ClientFactory provides dependencies
-    private final HomepagePlace place;
-    private HomepageView view;
+	private HomepageView view;
     private final GreetingServiceAsync greetingService;
     private ListDataProvider<ContactInfo> dataProvider;
     private Set<ContactInfo> selectedContacts;
-
-    public HomepageActivity(ClientFactory clientFactory, HomepagePlace place) {
-        this.clientFactory = clientFactory;
-        this.place = place;
-        this.greetingService = clientFactory.getGreetingService(); // Assume ClientFactory provides this
-        this.dataProvider = new ListDataProvider<>();
-    }
+	
+    public HomepageActivity(ClientFactory clientFactory, Place place) {
+		super(clientFactory, place);
+		this.place = new HomepagePlace();
+		this.greetingService = clientFactory.getGreetingService();
+		this.dataProvider = new ListDataProvider<>();
+	}
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
         this.view = clientFactory.getHomepageView(); // Assume ClientFactory provides HomepageView
         panel.setWidget(view.asWidget());
         setupUI();
-        setupHandlers();
+        bind();
         loadData();
     }
 
     private void setupUI() {
         view.getSearchBox().setText("");
+        // add placeholder
+        view.getSearchBox().getElement().setPropertyString("placeholder", "Search by name or phone number...");
         view.getAddContactButton().setEnabled(true);
         view.getUpdateContactButton().setEnabled(false);
         view.getDeleteContactButton().setEnabled(false);
@@ -113,9 +126,39 @@ public class HomepageActivity extends MGWTAbstractActivity {
         contactTable.addColumn(addressColumn, "Address");
     }
 
-    private void setupHandlers() {
-        // Server Search Handler
-        ServerSearchContactHandler serverSearchHandler = new ServerSearchContactHandler(
+    @Override
+	protected void bind() {
+        // Server + Live Search Handler
+    	initSearchHandler();
+
+        // Selection Change Handler
+        initSelectionModelHandler();
+
+        // Action Handlers
+        initAddUpdateDeleteHandlers();
+        
+        bindCtrlFToSearchBox(view.getSearchBox().getElement());
+    }
+    
+    private void initSearchHandler() {	
+    	
+    	view.getSearchBox().getTextBox().addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				// TODO Auto-generated method stub
+				String keyword = view.getSearchBox().getText();
+				view.getSpinner().getStyle().setDisplay(Display.BLOCK);
+				
+				// Hide spinner after a short delay if needed
+		        Scheduler.get().scheduleFixedDelay(() -> {
+		            view.getSpinner().getStyle().setDisplay(Display.NONE);
+		            return false;
+		        }, 300);
+			}
+		});
+		// Server Search Handler
+    	ServerSearchContactHandler serverSearchHandler = new ServerSearchContactHandler(
                 dataProvider, view.getSpinner(), view.getSearchBox(), view.getErrorLabel(), greetingService);
         view.getServerSearchButton().addClickHandler(serverSearchHandler);
 
@@ -123,9 +166,10 @@ public class HomepageActivity extends MGWTAbstractActivity {
         LiveSearchContactHandler liveSearchHandler = new LiveSearchContactHandler(
                 dataProvider, view.getSpinner(), view.getSearchBox(), view.getErrorLabel());
         view.getLiveSearchButton().addClickHandler(liveSearchHandler);
-
-        // Selection Change Handler
-        view.getSelectionModel().addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+	}
+    
+    private void initSelectionModelHandler() {
+    	view.getSelectionModel().addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
                 selectedContacts = view.getSelectionModel().getSelectedSet();
@@ -144,17 +188,30 @@ public class HomepageActivity extends MGWTAbstractActivity {
                 }
             }
         });
-
-        // Action Handlers
-        view.getAddContactButton().addClickHandler(new ActionContactHomepageHandler(
+	}
+    
+    private void initAddUpdateDeleteHandlers() {
+    	view.getAddContactButton().addClickHandler(new ActionContactHomepageHandler(
                 dataProvider, view.getSelectionModel(), view.getAddContactButton(), greetingService, ActionType.ADD));
         view.getUpdateContactButton().addClickHandler(new ActionContactHomepageHandler(
                 dataProvider, view.getSelectionModel(), view.getUpdateContactButton(), greetingService, ActionType.UPDATE));
         view.getDeleteContactButton().addClickHandler(new ActionContactHomepageHandler(
-                dataProvider, view.getSelectionModel(), view.getDeleteContactButton(), greetingService, ActionType.DELETE));
-    }
+				dataProvider, view.getSelectionModel(), view.getDeleteContactButton(), greetingService,
+				ActionType.DELETE));
+	}
 
-    private void loadData() {
+	private native void bindCtrlFToSearchBox(Element inputElement) /*-{
+		$wnd.addEventListener("keydown", function(e) {
+			if (e.ctrlKey && e.key === 'f') {
+				e.preventDefault();
+				inputElement.focus();
+				inputElement.select();
+			}
+		});
+	}-*/;
+
+    @Override
+    public void loadData() {
         greetingService.getAllContactInfos(new AsyncCallback<List<ContactInfo>>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -169,6 +226,19 @@ public class HomepageActivity extends MGWTAbstractActivity {
                 dataProvider.getList().addAll(result);
                 dataProvider.refresh();
                 ContactInfoCache.setCurrentContacts(result);
+                
+                MultiWordSuggestOracle oracle =  (MultiWordSuggestOracle ) view.getSearchBox().getSuggestOracle() ;
+                for (ContactInfo contact : ContactInfoCache.getCurrentContacts()) {
+                	String firstName = contact.getFirstName();
+                	if (firstName != null && !firstName.isEmpty()) {
+                	    oracle.add(firstName);
+                	}
+
+                	String phone = contact.getPhoneNumber();
+                	if (phone != null && !phone.isEmpty()) {
+                	    oracle.add(phone);
+                	}
+                }
             }
         });
     }

@@ -1,16 +1,51 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:gwtbootstrap3="urn:import:org.gwtbootstrap3.client.ui">
-	<ui:style>
-	.header {
-		background-color: #d3def6;
-	}
-	.buttonHeader {
-		margin: 10px;
-	}
-	</ui:style>
-	<g:HTMLPanel ui:field="headerBackgroundPanel" styleName="{style.header}">
-		<gwtbootstrap3:Button ui:field="headerButton" addStyleNames="{style.buttonHeader}">Header button</gwtbootstrap3:Button>
-	</g:HTMLPanel>
-</ui:UiBinder> 
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <ui:style>
+        .headerRoot {
+            text-align: center;
+            padding: 20px 0 0;
+        }
+
+        .headerContainer {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .headerBox {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255,255,255,0.95);
+            padding: 16px 32px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            margin: 0 20px;
+        }
+
+        .icon {
+            font-size: 32px;
+            margin-right: 12px;
+        }
+
+        .title {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </ui:style>
+
+    <g:HTMLPanel styleName="{style.headerRoot}">
+        <div class="{style.headerContainer}">
+            <div class="{style.headerBox}">
+                <div class="{style.icon}">📇</div>
+                <h1 class="{style.title}">Contact Manager Pro</h1>
+            </div>
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder>

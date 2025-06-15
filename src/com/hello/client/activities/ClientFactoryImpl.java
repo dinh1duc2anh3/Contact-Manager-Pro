@@ -8,6 +8,10 @@ import com.hello.client.GreetingService;
 import com.hello.client.GreetingServiceAsync;
 import com.hello.client.activities.contact.ContactView;
 import com.hello.client.activities.contact.ContactViewImpl;
+import com.hello.client.activities.crud.AddUpdateContactView;
+import com.hello.client.activities.crud.AddUpdateContactViewImpl;
+import com.hello.client.activities.crud.DeleteContactView;
+import com.hello.client.activities.crud.DeleteContactViewImpl;
 import com.hello.client.activities.home.HomeView;
 import com.hello.client.activities.home.HomeViewImpl;
 import com.hello.client.activities.homepage.HomepageView;
@@ -28,6 +32,8 @@ public class ClientFactoryImpl implements ClientFactory {
     private final HomepageView homepageView = new HomepageViewImpl();
     private final HomeView homeView = new HomeViewImpl(); // From your example
     private final ContactView contactView = new ContactViewImpl();
+    private final AddUpdateContactView addUpdateContactView = new AddUpdateContactViewImpl();
+    private final DeleteContactView deleteContactView = new DeleteContactViewImpl();
 	
     @Override
     public PlaceController getPlaceController() {
@@ -58,5 +64,15 @@ public class ClientFactoryImpl implements ClientFactory {
     public ContactView getContactView() {
         return contactView;
     }
+
+	@Override
+	public AddUpdateContactView getAddUpdateContactView() {
+		return addUpdateContactView;
+	}
+
+	@Override
+	public DeleteContactView getDeleteContactView() {
+		return deleteContactView;
+	}
 
 }

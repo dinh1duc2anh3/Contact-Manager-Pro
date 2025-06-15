@@ -11,10 +11,10 @@
 		}
 	</ui:style>
 	<g:HTMLPanel ui:field="mainPanel" addStyleNames="main-page-panel">
-		<basic:HeaderPanel ui:field="headerPanel"></basic:HeaderPanel>
+		
 		<g:HTMLPanel styleName="main-body-panel student-panel" ui:field="panelContentBasic">
 			<g:FlowPanel ui:field="containerPanel" styleName="container-panel"></g:FlowPanel>
 		</g:HTMLPanel>
-		<basic:FooterPanel ui:field="footerPanel"></basic:FooterPanel>
+		
 	</g:HTMLPanel>
 </ui:UiBinder> 

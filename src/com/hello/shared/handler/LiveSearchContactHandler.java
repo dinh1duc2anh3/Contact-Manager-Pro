@@ -9,6 +9,7 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.ListDataProvider;
 import com.hello.shared.cache.ContactInfoCache;
@@ -19,11 +20,14 @@ import com.hello.shared.enums.SearchValidationResult;
 public class LiveSearchContactHandler implements ClickHandler{
 	private  ListDataProvider<ContactInfo> dataProvider = new ListDataProvider<>();
 	private Element spinner; 
-	private TextBox searchBox;
+	private SuggestBox searchBox;
 	private Label errorLabel;
 	
-	public LiveSearchContactHandler(ListDataProvider<ContactInfo> dataProvider ,Element spinner
-			 , TextBox searchBox, Label errorLabel) {
+	public LiveSearchContactHandler(
+			ListDataProvider<ContactInfo> dataProvider ,
+			Element spinner, 
+			SuggestBox searchBox, 
+			Label errorLabel) {
 		this.dataProvider = dataProvider;
 		this.spinner = spinner;
 		this.searchBox = searchBox; 

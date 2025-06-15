@@ -11,10 +11,13 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import com.hello.client.GreetingServiceAsync;
+import com.hello.client.activities.crud.AddUpdateContactActivity;
+import com.hello.client.activities.crud.DeleteContactActivity;
 //import OverlayUtil;
 //import AddUpdateContactDialog;
 //import DeleteContactDialog;
 import com.hello.shared.model.ContactInfo;
+import com.hello.shared.utils.OverlayUtil;
 import com.hello.shared.enums.ActionType;
 
 public class ActionContactHomepageHandler implements ClickHandler {
@@ -44,31 +47,42 @@ public class ActionContactHomepageHandler implements ClickHandler {
 			}
 
 			// Tạo overlay element
-//			SimplePanel overlay = OverlayUtil.createOverlay();
+			SimplePanel overlay = OverlayUtil.createOverlay();
 			
 
 			if (actionType.equals(ActionType.ADD)) {
-//				AddUpdateContactDialog addContactInfoDialog = new AddUpdateContactDialog(greetingService,
-//						actionContactButton, dataProvider, multiSelectionModel, ActionType.ADD, overlay);
-//				addContactInfoDialog.showDialog();
+				AddUpdateContactActivity addContactInfoDialog = new AddUpdateContactActivity(
+						greetingService,
+						dataProvider, 
+						multiSelectionModel, 
+						ActionType.ADD, 
+						overlay);
+				addContactInfoDialog.showDialog();
 			} 
 			else if (actionType.equals(ActionType.UPDATE)) {
 				// For UPDATE, we need exactly one selected contact
 				if (multiSelectionModel.getSelectedSet().isEmpty()) {
 					Window.alert("Please select a contact to update.");
-//					OverlayUtil.removeOverlay(overlay);
+					OverlayUtil.removeOverlay(overlay);
 					return;
 				}
-//				AddUpdateContactDialog updateContactInfoDialog = new AddUpdateContactDialog(greetingService,
-//						actionContactButton, dataProvider, multiSelectionModel, ActionType.UPDATE, overlay);
-//				updateContactInfoDialog.showDialog();
+				AddUpdateContactActivity updateContactInfoDialog = new AddUpdateContactActivity(
+						greetingService,
+						dataProvider, 
+						multiSelectionModel, 
+						ActionType.UPDATE, 
+						overlay);
+				updateContactInfoDialog.showDialog();
 			} 
 			else if (actionType.equals(ActionType.DELETE)) {
 				// Create the dialog
-//				DeleteContactDialog deleteContactInfoDialog = new DeleteContactDialog(greetingService,
-//						actionContactButton, dataProvider, multiSelectionModel, overlay);
-//
-//				deleteContactInfoDialog.showDialog();
+				DeleteContactActivity deleteContactInfoDialog = new DeleteContactActivity(
+						greetingService,
+						dataProvider, 
+						multiSelectionModel, 
+						overlay);
+
+				deleteContactInfoDialog.showDialog();
 			}
 		} catch (Exception e) {
 			GWT.log("Error creating action dialog: " + e.getMessage(), e);

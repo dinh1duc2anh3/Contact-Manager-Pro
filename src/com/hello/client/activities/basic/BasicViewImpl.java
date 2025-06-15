@@ -23,8 +23,6 @@ public class BasicViewImpl implements BasicView {
 		private final BasicViewImpl basicView;
 		@UiField HTMLPanel mainPanel, panelContentBasic;
 		@UiField FlowPanel containerPanel;
-		@UiField HeaderPanel headerPanel;
-		@UiField FooterPanel footerPanel;
 
 		public Layout(BasicViewImpl basicView) {
 			this.basicView = basicView;
@@ -52,14 +50,6 @@ public class BasicViewImpl implements BasicView {
 		
 		public FlowPanel getContainerPanel() {
 			return containerPanel;
-		}
-		
-		public HeaderPanel getHeaderPanel() {
-			return headerPanel;
-		}
-		
-		public FooterPanel getFooterPanel() {
-			return footerPanel;
 		}
 	}
 	

@@ -23,12 +23,10 @@ public class ContactInfo implements Serializable, IsSerializable {
 	private String fullName;
     @Id
     private String phoneNumber;
-    private String address;
 
+    private String address;
     public ContactInfo() {} // GWT RPC cần constructor rỗng
 
-
-	
 	//create new contact info 
 	public ContactInfo(String firstName, String lastName, String phoneNumber, String address
 			) {

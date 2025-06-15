@@ -5,6 +5,8 @@ import com.hello.client.activities.contact.ContactActivity;
 import com.hello.client.activities.contact.ContactPlace;
 import com.hello.client.activities.home.HomeActivity;
 import com.hello.client.activities.home.HomePlace;
+import com.hello.client.activities.homepage.HomepageActivity;
+import com.hello.client.activities.homepage.HomepagePlace;
 
 
 public class NormalAppActivityMapper implements AsyncActivityMapper {
@@ -23,5 +25,8 @@ public class NormalAppActivityMapper implements AsyncActivityMapper {
 		else if (place instanceof ContactPlace) {
 			activityCallbackHandler.onRecieveActivity( new ContactActivity(clientFactory, place));
 		} 
+		else if (place instanceof HomepagePlace) {
+			activityCallbackHandler.onRecieveActivity(new HomepageActivity(clientFactory, place));
+		}
 	}
 }

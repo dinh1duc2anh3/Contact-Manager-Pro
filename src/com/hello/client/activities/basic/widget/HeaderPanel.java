@@ -14,13 +14,13 @@ public class HeaderPanel extends Composite {
 
 	interface HeaderPanelUiBinder extends UiBinder<Widget, HeaderPanel> {
 	}
-	@UiField Button headerButton;
+//	@UiField Button headerButton;
 	
 	public HeaderPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
-	
-	public Button getHeaderButton() {
-		return headerButton;
-	}
+//	
+//	public Button getHeaderButton() {
+//		return headerButton;
+//	}
 }

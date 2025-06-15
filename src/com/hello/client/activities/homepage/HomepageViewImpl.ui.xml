@@ -6,7 +6,9 @@
   <g:VerticalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER">
     <!-- Search -->
     <g:HorizontalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER" verticalAlignment="middle" styleName="search-panel">
-      <g:TextBox ui:field="searchBox" width="300px" styleName="form-control"/>
+      <g:SuggestBox ui:field="searchBox" width="300px" styleName="form-control">
+		  <g:MultiWordSuggestOracle/>
+		</g:SuggestBox>
       <g:Button ui:field="liveSearchButton" text="Live Search" styleName="btn btn-primary"/>
       <g:Button ui:field="serverSearchButton" text="Server Search" styleName="btn btn-primary"/>
       <g:HTMLPanel width="30px" height="30px">

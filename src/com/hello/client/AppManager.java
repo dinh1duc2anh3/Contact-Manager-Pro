@@ -13,6 +13,7 @@ import com.hello.client.activities.ClientFactory;
 import com.hello.client.activities.ClientFactoryImpl;
 import com.hello.client.activities.MyPlaceHistoryMapper;
 import com.hello.client.activities.NormalAppActivityMapper;
+import com.hello.client.activities.basic.widget.LayoutWrapper;
 import com.hello.client.activities.homepage.HomepagePlace;
 
 /**
@@ -24,11 +25,18 @@ public class AppManager implements EntryPoint {
 	public static final ClientFactory CLIENT_FACTORY = new ClientFactoryImpl();
 	
 	public void onModuleLoad() {
-		SimplePanel display = new SimplePanel();
+		// set up layout + singleton 
+		LayoutWrapper layout = LayoutWrapper.getOnlyLayoutWrapper();
+		SimplePanel mainPanel = new SimplePanel();
+		
+		layout.setMainContent(mainPanel);
+		
+		// setup activity management
 		AsyncActivityMapper activityMapper = new NormalAppActivityMapper(CLIENT_FACTORY);
 		AsyncActivityManager activityManager = new AsyncActivityManager(activityMapper, CLIENT_FACTORY.getEventBus());
-		activityManager.setDisplay(display);
-		RootPanel.get().add(display);
+		activityManager.setDisplay(mainPanel);
+		
+		// setup place history
 		final PlaceHistoryMapper myHistoryMapper = GWT.create(MyPlaceHistoryMapper.class);
 		PlaceHistoryMapper historyMapper = new AppPlaceHistoryMapper(myHistoryMapper);
 		final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);

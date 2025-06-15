@@ -32,6 +32,7 @@ public class ContactInfoCache {
 	}
 	
 	public static void updateContact(ContactInfo contact) {
+		
 		contactMap.put(contact.getPhoneNumber(), contact);
 	}
 	

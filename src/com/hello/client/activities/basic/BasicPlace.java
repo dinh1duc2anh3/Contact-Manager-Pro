@@ -10,7 +10,7 @@ public class BasicPlace extends Place {
 	}
 	
 	public String getToken() {
-		return PlaceToken.HOME;
+		return PlaceToken.HOMEPAGE;
 	}
 }
 

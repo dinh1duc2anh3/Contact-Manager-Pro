@@ -1,16 +1,31 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:gwtbootstrap3="urn:import:org.gwtbootstrap3.client.ui">
-	<ui:style>
-	.header {
-		background-color: #d3def6;
-	}
-	.buttonHeader {
-		margin: 10px;
-	}
-	</ui:style>
-	<g:HTMLPanel styleName="{style.header}">
-		<gwtbootstrap3:Button ui:field="footerButton" addStyleNames="{style.buttonHeader}">Footer button</gwtbootstrap3:Button>
-	</g:HTMLPanel>
-</ui:UiBinder> 
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <ui:style>
+        .footer {
+            text-align: center;
+            padding: 40px 20px 20px;
+            color: #333;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .footerInner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footerText {
+            margin: 0;
+            font-size: 14px;
+        }
+    </ui:style>
+
+    <g:HTMLPanel styleName="{style.footer}">
+        <div class="{style.footerInner}">
+            <p class="{style.footerText}">
+                Built with ❤️ using GWT Framework | Professional Contact Management System
+            </p>
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder>

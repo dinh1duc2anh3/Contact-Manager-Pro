@@ -8,6 +8,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -21,7 +22,7 @@ public class HomepageViewImpl extends Composite implements HomepageView {
     private static HomepageViewImplUiBinder uiBinder = GWT.create(HomepageViewImplUiBinder.class);
 
     @UiField
-    TextBox searchBox;
+    SuggestBox searchBox;
 
     @UiField
     Button liveSearchButton;
@@ -54,7 +55,7 @@ public class HomepageViewImpl extends Composite implements HomepageView {
     }
 
     @Override
-    public TextBox getSearchBox() {
+    public SuggestBox getSearchBox() {
         return searchBox;
     }
 

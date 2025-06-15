@@ -94,6 +94,10 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     public void updateContactInfo(ContactInfo selectedContact, ContactInfo updatedContact)
     		throws ContactAlreadyExistsException, ContactNoneExistsException{
     	
+    	if (updatedContact.equals(selectedContact)) {
+            throw new ContactAlreadyExistsException("No changes detected. Please update at least one field.");
+        }
+    	
     	myDB.update(selectedContact, updatedContact);
     	return;
     }
