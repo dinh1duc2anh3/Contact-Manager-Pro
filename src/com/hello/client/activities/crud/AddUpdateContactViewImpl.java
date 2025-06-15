@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.hello.client.activities.basic.BasicViewImpl;
 import com.hello.shared.enums.Address;
+import com.hello.shared.enums.Gender;
 import com.hello.shared.model.ContactInfo;
 import com.hello.shared.utils.OverlayUtil;
 
@@ -36,6 +37,7 @@ public class AddUpdateContactViewImpl extends BasicViewImpl implements AddUpdate
 	@UiField TextBox phoneNumberBox;
 //	@UiField ListBox addressListBox;
 	@UiField(provided = true) ValueListBox<Address> addressValueListBox;
+	@UiField(provided = true) ValueListBox<Gender> genderValueListBox;
 	@UiField Button actionButton; // "Add" hoặc "Update"
 	@UiField Button closeButton;// button mở dialog ("Add Contact" hoặc "Update Contact")
 	
@@ -48,6 +50,12 @@ public class AddUpdateContactViewImpl extends BasicViewImpl implements AddUpdate
 	        }
 	    });
 		
+		genderValueListBox = new ValueListBox<Gender>(new AbstractRenderer<Gender>() {
+	        @Override
+	        public String render(Gender gender) {
+	            return gender == null ? "Chọn giới tính" : gender.toString(); // hoặc .getDisplayName()
+	        }
+	    });
 		
 		this.layout.getContainerPanel().add((uiBinder.createAndBindUi(this)));
 	}
@@ -85,6 +93,11 @@ public class AddUpdateContactViewImpl extends BasicViewImpl implements AddUpdate
 	@Override
 	public ValueListBox<Address> getAddressValueListBox() {
 		return addressValueListBox;
+	}
+	
+	@Override
+	public ValueListBox<Gender> getGenderValueListBox() {
+		return genderValueListBox;
 	}
 
 	@Override
@@ -127,6 +140,9 @@ public class AddUpdateContactViewImpl extends BasicViewImpl implements AddUpdate
 		OverlayUtil.displayOverlay(overlay);
 		addressValueListBox.setValue(null);
 	    addressValueListBox.setAcceptableValues(Arrays.asList(Address.values()));
+	    
+	    genderValueListBox.setValue(null);
+	    genderValueListBox.setAcceptableValues(Arrays.asList(Gender.values()));
 		
 		
 		
@@ -137,8 +153,10 @@ public class AddUpdateContactViewImpl extends BasicViewImpl implements AddUpdate
 			actionButton.setText("Update");
 			firstNameBox.setText(selectedContact.getFirstName());
 			lastNameBox.setText(selectedContact.getLastName());
+			genderValueListBox.setValue(selectedContact.getGender());
 			phoneNumberBox.setText(selectedContact.getPhoneNumber());
 			addressValueListBox.setValue(selectedContact.getAddress());
+			
 		}
 		dialogBox.center();
 		dialogBox.show();
@@ -150,6 +168,7 @@ public class AddUpdateContactViewImpl extends BasicViewImpl implements AddUpdate
 	public void clearFields() {
 		firstNameBox.setText("");
 		lastNameBox.setText("");
+		genderValueListBox.setValue(null);
 		phoneNumberBox.setText("");
 		addressValueListBox.setValue(null);
 	}

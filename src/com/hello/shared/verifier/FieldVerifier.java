@@ -25,6 +25,14 @@ public class FieldVerifier {
 	}
 	
 	
+	public static Boolean isValidGender(String gd) {
+		if (gd == null || gd.isEmpty() ) {
+			Window.alert("Error: gender is invalid, selected at least 1 gender");
+			return false; //not ok  
+		}
+		return true; //oke 
+	}
+
 	public static Boolean isValidPhoneNumber(String phoneNumber) {
 		if (phoneNumber == null || phoneNumber.length() > 10 || phoneNumber.length() < 8) {
 			Window.alert("Error: phoneNumber is invalid,  at least 8 , max 10 char");

@@ -27,6 +27,7 @@
 	      <g:Button ui:field="addContactButton" text="Add Contact" styleName="btn btn-sm btn-success action-button"/>
 	      <g:Button ui:field="updateContactButton" text="Update Contact" styleName="btn btn-sm btn-warning action-button"/>
 	      <g:Button ui:field="deleteContactButton" text="Delete Contact" styleName="btn btn-sm btn-danger action-button"/>
+	      <g:Button ui:field="toggleSelectAllButton" text="Select / Deselect All Contacts" styleName="btn btn-sm  btn-primary action-button"/>
 	    </g:HorizontalPanel>
 	    
 		<!-- Table Section with scroll -->

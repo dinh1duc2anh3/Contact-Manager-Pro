@@ -4,7 +4,7 @@ import com.google.gwt.core.client.GWT;
 
 public class ContactInfoVerifier {
 
-	public static Boolean contactInfoVerifier(String fn, String ln, String pn, String ad) {
+	public static Boolean contactInfoVerifier(String fn, String ln,String gd, String pn, String ad) {
 		GWT.log("validating contact info ");
 		Boolean firstNameAddVerifier = FieldVerifier.isValidName(fn);
 		if (!firstNameAddVerifier) {
@@ -13,6 +13,11 @@ public class ContactInfoVerifier {
 
 		Boolean lastNameAddVerifier = FieldVerifier.isValidName(ln);
 		if (!lastNameAddVerifier) {
+			return false;
+		}
+		
+		Boolean genderAddVerifier = FieldVerifier.isValidGender(gd);
+		if (!genderAddVerifier) {
 			return false;
 		}
 

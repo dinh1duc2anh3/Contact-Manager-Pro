@@ -122,7 +122,7 @@ public class MyObjectifyDB implements MyDB  {
 
 		
 		
-		System.out.println("updating contact: " + selectedContact.getFirstName() + selectedContact.getLastName());
+		System.out.println(this.getClass() + "updating contact: " + selectedContact.getFirstName() + selectedContact.getLastName());
 		//assume selected phone number has already existed
 		//check if updated phoneNumber has existed in the DB  
 		

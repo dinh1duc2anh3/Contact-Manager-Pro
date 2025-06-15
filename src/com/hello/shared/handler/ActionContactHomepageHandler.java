@@ -51,13 +51,13 @@ public class ActionContactHomepageHandler implements ClickHandler {
 			
 
 			if (actionType.equals(ActionType.ADD)) {
-				AddUpdateContactActivity addContactInfoDialog = new AddUpdateContactActivity(
+				AddUpdateContactActivity addContactActivity = new AddUpdateContactActivity(
 						greetingService,
 						dataProvider, 
 						multiSelectionModel, 
 						ActionType.ADD, 
 						overlay);
-				addContactInfoDialog.showDialog();
+				addContactActivity.showDialog();
 			} 
 			else if (actionType.equals(ActionType.UPDATE)) {
 				// For UPDATE, we need exactly one selected contact
@@ -66,23 +66,23 @@ public class ActionContactHomepageHandler implements ClickHandler {
 					OverlayUtil.removeOverlay(overlay);
 					return;
 				}
-				AddUpdateContactActivity updateContactInfoDialog = new AddUpdateContactActivity(
+				AddUpdateContactActivity updateContactActivity = new AddUpdateContactActivity(
 						greetingService,
 						dataProvider, 
 						multiSelectionModel, 
 						ActionType.UPDATE, 
 						overlay);
-				updateContactInfoDialog.showDialog();
+				updateContactActivity.showDialog();
 			} 
 			else if (actionType.equals(ActionType.DELETE)) {
 				// Create the dialog
-				DeleteContactActivity deleteContactInfoDialog = new DeleteContactActivity(
+				DeleteContactActivity deleteContactActivity = new DeleteContactActivity(
 						greetingService,
 						dataProvider, 
 						multiSelectionModel, 
 						overlay);
 
-				deleteContactInfoDialog.showDialog();
+				deleteContactActivity.showDialog();
 			}
 		} catch (Exception e) {
 			GWT.log("Error creating action dialog: " + e.getMessage(), e);

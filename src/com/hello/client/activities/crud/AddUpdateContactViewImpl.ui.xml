@@ -8,12 +8,14 @@
             <g:Label text="Last Name:"  styleName="form-label"/>
             <g:TextBox ui:field="lastNameBox"  styleName="form-control"/>
             
+            <g:Label text="Gender:" styleName="form-label"/>
+			<g:ValueListBox ui:field="genderValueListBox"  />
+            
             <g:Label text="Phone Number:" styleName="form-label"/>
             <g:TextBox ui:field="phoneNumberBox"  styleName="form-control"/>
             
             
             <g:Label text="Address:" styleName="form-label"/>
-<!--             <g:TextBox ui:field="addressBox" styleName="form-control" /> -->
 <!-- 			<g:ListBox ui:field="addressListBox" styleName="form-control" /> -->
 			<g:ValueListBox ui:field="addressValueListBox"  />
             

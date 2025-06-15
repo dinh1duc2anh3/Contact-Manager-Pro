@@ -19,7 +19,8 @@ public interface HomepageView extends IsWidget {
     Button getAddContactButton();
     Button getUpdateContactButton();
     Button getDeleteContactButton();
-    Label getErrorLabel();
+	Button getToggleSelectAllButton();
+	Label getErrorLabel();
     CellTable<ContactInfo> getContactTable();
     MultiSelectionModel<ContactInfo> getSelectionModel();
     Element getSpinner();

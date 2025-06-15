@@ -1,6 +1,7 @@
 package com.hello.client.activities.homepage;
 
 import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Display;
@@ -17,6 +18,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -27,6 +29,7 @@ import com.hello.client.GreetingServiceAsync;
 import com.hello.client.activities.ClientFactory;
 import com.hello.client.activities.basic.BasicActivity;
 import com.hello.client.activities.contact.ContactPlace;
+import com.hello.client.activities.crud.AddUpdateContactActivity;
 import com.hello.client.activities.home.HomeView;
 import com.hello.shared.model.ContactInfo;
 import com.hello.shared.model.User;
@@ -90,12 +93,26 @@ public class HomepageActivity extends BasicActivity {
         contactTable.addColumn(checkColumn, "CheckBox");
 
         // Column: First Name
-        TextColumn<ContactInfo> firstNameColumn = new TextColumn<ContactInfo>() {
+        Column<ContactInfo, String> firstNameColumn = new Column<ContactInfo, String>(new ClickableTextCell()) {
             @Override
-            public String getValue(ContactInfo object) {
-                return object.getFirstName();
+            public String getValue(ContactInfo contact) {
+                return contact.getFirstName();
             }
         };
+
+        
+        firstNameColumn.setFieldUpdater((index, contact, value) -> {
+        	if (selectionModel.getSelectedSet().size() == 1) {
+        		SimplePanel overlay = new SimplePanel();
+                AddUpdateContactActivity addContactActivity = new AddUpdateContactActivity(
+    					greetingService,
+    					dataProvider, 
+    					selectionModel, 
+    					ActionType.UPDATE, 
+    					overlay);
+    			addContactActivity.showDialog();
+        	}
+        });
         contactTable.addColumn(firstNameColumn, "First Name");
 
         // Column: Last Name
@@ -106,6 +123,15 @@ public class HomepageActivity extends BasicActivity {
             }
         };
         contactTable.addColumn(lastNameColumn, "Last Name");
+        
+        // Column: gender
+        TextColumn<ContactInfo> genderColumn = new TextColumn<ContactInfo>() {
+            @Override
+            public String getValue(ContactInfo object) {
+                return object.getGenderStr();
+            }
+        };
+        contactTable.addColumn(genderColumn, "Gender");
 
         // Column: Phone Number
         TextColumn<ContactInfo> phoneNumberColumn = new TextColumn<ContactInfo>() {
@@ -136,6 +162,8 @@ public class HomepageActivity extends BasicActivity {
 
         // Action Handlers
         initAddUpdateDeleteHandlers();
+        
+        initSelectAllHandler();
         
         bindCtrlFToSearchBox(view.getSearchBox().getElement());
     }
@@ -195,6 +223,36 @@ public class HomepageActivity extends BasicActivity {
         view.getDeleteContactButton().addClickHandler(new ActionContactHomepageHandler(
 				dataProvider, view.getSelectionModel(), view.getDeleteContactButton(), greetingService,
 				ActionType.DELETE));
+	}
+
+	private void initSelectAllHandler() {
+		view.getToggleSelectAllButton().addClickHandler(event -> toggleSelectAllContacts());
+	}
+
+	private void toggleSelectAllContacts() {
+		@SuppressWarnings("unchecked")
+		MultiSelectionModel<ContactInfo> selectionModel = (MultiSelectionModel<ContactInfo>) view.getContactTable().getSelectionModel();
+		
+		List<ContactInfo> allContacts = view.getContactTable().getVisibleItems();
+
+		boolean hasSelection = false;
+	    for (ContactInfo contact : allContacts) {
+	        if (selectionModel.isSelected(contact)) {
+	            hasSelection = true;
+	            break;
+	        }
+	    }
+	    if (hasSelection) {
+	        // Deselect all
+	        for (ContactInfo contact : allContacts) {
+	            selectionModel.setSelected(contact, false);
+	        }
+	    } else {
+	        // Select all
+	        for (ContactInfo contact : allContacts) {
+	            selectionModel.setSelected(contact, true);
+	        }
+	    }
 	}
 
 	private native void bindCtrlFToSearchBox(Element inputElement) /*-{

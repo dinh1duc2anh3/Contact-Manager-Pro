@@ -37,6 +37,8 @@ public class HomepageViewImpl extends Composite implements HomepageView {
     @UiField Button updateContactButton;
 
     @UiField Button deleteContactButton;
+    
+    @UiField Button toggleSelectAllButton;
 
     @UiField Label errorLabel;
 
@@ -84,6 +86,11 @@ public class HomepageViewImpl extends Composite implements HomepageView {
     }
 
     @Override
+    public Button getToggleSelectAllButton() {
+		return toggleSelectAllButton;
+	}
+
+	@Override
     public Label getErrorLabel() {
         return errorLabel;
     }

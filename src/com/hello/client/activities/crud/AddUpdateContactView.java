@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.hello.shared.enums.Address;
+import com.hello.shared.enums.Gender;
 import com.hello.shared.model.ContactInfo;
 
 public interface AddUpdateContactView {
@@ -17,6 +18,7 @@ public interface AddUpdateContactView {
 	DialogBox getDialogBox();
 	TextBox getFirstNameBox();
 	TextBox getLastNameBox();
+	ValueListBox<Gender> getGenderValueListBox();
 	TextBox getPhoneNumberBox();
 	ValueListBox<Address> getAddressValueListBox();
 	Button getActionButton(); 
