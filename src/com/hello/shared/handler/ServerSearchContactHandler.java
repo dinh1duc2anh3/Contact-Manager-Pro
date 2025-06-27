@@ -3,6 +3,8 @@ package com.hello.shared.handler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.checkerframework.checker.units.qual.C;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
@@ -134,19 +136,17 @@ public class ServerSearchContactHandler implements ClickHandler {
 	    });
 	}
 	private void searchByPhoneNumber( String keyword) {
-	    greetingService.getContactInfosByPhoneNumber(keyword, new AsyncCallback<ContactInfo>() {
+	    greetingService.startsWithPhoneNumber(keyword, new AsyncCallback<List<ContactInfo>>() {
 	        public void onFailure(Throwable caught) {
 	            showSpinner(false);
 	            GWT.log("Error searching by phone number", caught);
 	            Window.alert("No contacts found.");
 	        }
 
-	        public void onSuccess(ContactInfo result) {
+	        public void onSuccess(List<ContactInfo> result) {
 	            showSpinner(false);
 	            if (result != null) {
-	                List<ContactInfo> list = new ArrayList<>();
-	                list.add(result);
-	                handleResult(list, "phone number");
+	                handleResult(result, "phone number");
 	            } else {
 	                Window.alert("No contacts found.");
 	            }

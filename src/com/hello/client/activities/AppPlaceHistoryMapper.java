@@ -4,9 +4,13 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
 import com.hello.client.ClientUtils;
+import com.hello.client.activities.addupdate2.AddUpdateContactPlace2;
+import com.hello.client.activities.addupdate2.AddUpdateContactViewImpl2;
 import com.hello.client.activities.contact.ContactPlace;
+import com.hello.client.activities.delete.DeleteContactPlace2;
 import com.hello.client.activities.home.HomePlace;
 import com.hello.client.activities.homepage.HomepagePlace;
+import com.hello.shared.enums.ActionType;
 
 @WithTokenizers({
 	HomepagePlace.Tokenizer.class,
@@ -48,6 +52,9 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper {
         else if (tokenPlace.indexOf(PlaceToken.HOME) == 0) {
         	nextPlace = new HomePlace();
         }
+        else if (tokenPlace.startsWith("add-update")) {
+            nextPlace = new AddUpdateContactPlace2.Tokenizer().getPlace(tokenPlace);
+        }
         return nextPlace;
 	}
 	
@@ -87,6 +94,12 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper {
 		}
 		else if (place != null && place instanceof HomePlace){
 			return ((HomePlace)place).getToken();
+		}
+		else if (place instanceof AddUpdateContactPlace2) {
+		    return new AddUpdateContactPlace2.Tokenizer().getToken((AddUpdateContactPlace2) place);
+		}
+		else if (place instanceof DeleteContactPlace2) {
+		    return new DeleteContactPlace2.Tokenizer().getToken((DeleteContactPlace2) place);
 		}
 		else  {
 			return ((HomepagePlace)place).getToken();

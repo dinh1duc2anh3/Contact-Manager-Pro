@@ -40,6 +40,16 @@ public class ContactInfoCache {
 		contactMap.remove(contact.getPhoneNumber());
 	}
 
+	public static void removeContactByPhoneNumber(String phone) {
+		contactMap.remove(phone);
+	}
+	
+	public static void removeContactByPhoneNumbers(List<String> phones) {
+		for (String phone : phones) {
+			removeContactByPhoneNumber(phone);
+		}
+	}
+
 	public static void removeContacts(Set<ContactInfo>  selectedContacts) {
 		List<String> phones = selectedContacts.stream().map(ContactInfo::getPhoneNumber).collect(Collectors.toList());
 		for (String phone : phones) {

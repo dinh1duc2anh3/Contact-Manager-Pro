@@ -16,5 +16,6 @@ public interface MyDB {
 	List<ContactInfo> findByFirstName(String firstname) throws ContactNoneExistsException ;
 	List<ContactInfo> findByFullName(String fullname) throws ContactNoneExistsException;
 	ContactInfo findByPhoneNumber(String phoneNumber) ;
+	List<ContactInfo> startsWithPhoneNumber(String phoneNumber_part);
 	
 }

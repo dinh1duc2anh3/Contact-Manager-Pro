@@ -1,6 +1,7 @@
 package com.hello.shared.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -25,10 +26,17 @@ public class ContactInfo implements Serializable, IsSerializable {
 	private String fullName;
     
     private Gender gender;
-    @Id
+    
+
+	@Id
     private String phoneNumber;
+    @Index
+    private String phoneNumberForSearch;
 
     private Address address;
+    @Index
+    private Date createdDate;
+    
     public ContactInfo() {} // GWT RPC cần constructor rỗng
 
 	//create new contact info 
@@ -44,6 +52,8 @@ public class ContactInfo implements Serializable, IsSerializable {
 		this.gender = gender;
 		this.address = address;
 		this.phoneNumber = ContactInfoFormatter.formatPhoneNumber(phoneNumber) ;
+		this.phoneNumberForSearch = this.phoneNumber;
+		this.createdDate = new Date();
 	}
 	
 
@@ -61,14 +71,15 @@ public class ContactInfo implements Serializable, IsSerializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(firstName, lastName,gender, phoneNumber, address);
+		return Objects.hash(firstName, lastName,gender, phoneNumber, address, createdDate);
 	}
 
 	public String getFullName() {
 		return fullName;
 	}
 
-	public void setFullName(String fullName) {
+	public void setFullName() {
+		String fullName = ContactInfoFormatter.formatName(this.getFirstName() + " " + this.getLastName());
 		this.fullName = fullName;
 	}
 
@@ -107,6 +118,7 @@ public class ContactInfo implements Serializable, IsSerializable {
 	}
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+		this.phoneNumberForSearch = phoneNumber;
 	}
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
@@ -114,4 +126,17 @@ public class ContactInfo implements Serializable, IsSerializable {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+	
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+    
+    public String getPhoneNumberForSearch() {
+		return phoneNumberForSearch;
+	}
+
 }

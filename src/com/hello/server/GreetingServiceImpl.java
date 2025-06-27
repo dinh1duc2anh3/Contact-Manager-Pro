@@ -76,6 +76,12 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		String formattedPhoneNumber = ContactInfoFormatter.formatPhoneNumber(phoneNumber);
 		return myDB.findByPhoneNumber(formattedPhoneNumber);
 	}
+	
+	@Override
+	public List<ContactInfo> startsWithPhoneNumber(String phoneNumber){
+		String formattedPhoneNumber = ContactInfoFormatter.formatPhoneNumber(phoneNumber);
+		return myDB.startsWithPhoneNumber(formattedPhoneNumber);
+	}
 
     @Override
     public List<ContactInfo> getAllContactInfos() {

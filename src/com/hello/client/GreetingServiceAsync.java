@@ -16,6 +16,8 @@ public interface GreetingServiceAsync {
 	
 	void getContactInfosByPhoneNumber(String phoneNumber,  AsyncCallback<ContactInfo> callback);
 	
+	void startsWithPhoneNumber(String phoneNumber,  AsyncCallback<List<ContactInfo>> callback);
+	
 	void getAllContactInfos( AsyncCallback<List<ContactInfo>> callback) ;
 	
 	void addContactInfo(ContactInfo newContact,AsyncCallback<Void> callback);

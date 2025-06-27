@@ -14,10 +14,11 @@ public class ContactInfoMapper {
         ContactInfo dto = new ContactInfo();
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
-        dto.setFullName(entity.getFullName());
+        dto.setFullName();
         dto.setGender(entity.getGender());
         dto.setPhoneNumber(entity.getPhoneNumber());
         dto.setAddress(entity.getAddress());
+        dto.setCreatedDate(entity.getCreatedDate());
         return dto;
     }
 //

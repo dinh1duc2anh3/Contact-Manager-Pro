@@ -20,6 +20,8 @@ public interface GreetingService extends RemoteService {
 	
 	ContactInfo getContactInfosByPhoneNumber(String phoneNumber);
 	
+	List<ContactInfo> startsWithPhoneNumber(String phoneNumber);
+
 	List<ContactInfo> getAllContactInfos() throws IllegalArgumentException;
 	
 	void addContactInfo(ContactInfo newContact) throws ContactAlreadyExistsException;

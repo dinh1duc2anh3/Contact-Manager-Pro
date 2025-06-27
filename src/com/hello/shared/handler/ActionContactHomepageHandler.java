@@ -11,8 +11,8 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import com.hello.client.GreetingServiceAsync;
-import com.hello.client.activities.crud.AddUpdateContactActivity;
-import com.hello.client.activities.crud.DeleteContactActivity;
+import com.hello.client.activities.addupdateDialog.AddUpdateContactActivity;
+import com.hello.client.activities.deleteDialog.DeleteContactActivity;
 //import OverlayUtil;
 //import AddUpdateContactDialog;
 //import DeleteContactDialog;
@@ -26,15 +26,21 @@ public class ActionContactHomepageHandler implements ClickHandler {
 	private MultiSelectionModel<ContactInfo> multiSelectionModel;
 	private Button actionContactButton;
 	private ActionType actionType;
+	private Runnable onCompleteCallback;
 
-	public ActionContactHomepageHandler(ListDataProvider<ContactInfo> dataProvider,
-			MultiSelectionModel<ContactInfo> multiSelectionModel, Button actionContactButton,
-			GreetingServiceAsync greetingService, ActionType actionType) {
+	public ActionContactHomepageHandler(
+			ListDataProvider<ContactInfo> dataProvider,
+			MultiSelectionModel<ContactInfo> multiSelectionModel, 
+			Button actionContactButton,
+			GreetingServiceAsync greetingService, 
+			ActionType actionType,
+			Runnable onCompleteCallback) {
 		this.greetingService = greetingService;
 		this.dataProvider = dataProvider;
 		this.multiSelectionModel = multiSelectionModel;
 		this.actionContactButton = actionContactButton;
 		this.actionType = actionType;
+		this.onCompleteCallback = onCompleteCallback;
 	}
 
 	@Override
@@ -56,7 +62,8 @@ public class ActionContactHomepageHandler implements ClickHandler {
 						dataProvider, 
 						multiSelectionModel, 
 						ActionType.ADD, 
-						overlay);
+						overlay,
+						onCompleteCallback);
 				addContactActivity.showDialog();
 			} 
 			else if (actionType.equals(ActionType.UPDATE)) {
@@ -71,7 +78,8 @@ public class ActionContactHomepageHandler implements ClickHandler {
 						dataProvider, 
 						multiSelectionModel, 
 						ActionType.UPDATE, 
-						overlay);
+						overlay,
+						onCompleteCallback);
 				updateContactActivity.showDialog();
 			} 
 			else if (actionType.equals(ActionType.DELETE)) {
@@ -80,7 +88,8 @@ public class ActionContactHomepageHandler implements ClickHandler {
 						greetingService,
 						dataProvider, 
 						multiSelectionModel, 
-						overlay);
+						overlay,
+						onCompleteCallback);
 
 				deleteContactActivity.showDialog();
 			}

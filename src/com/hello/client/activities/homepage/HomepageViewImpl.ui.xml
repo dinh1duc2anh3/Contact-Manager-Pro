@@ -7,11 +7,16 @@
 	  <g:VerticalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER">
 	    <!-- Search -->
 	    <g:HorizontalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER" verticalAlignment="middle" styleName="search-panel">
-	      <g:SuggestBox ui:field="searchBox" width="300px" styleName="form-control">
-			  <g:MultiWordSuggestOracle/>
-			</g:SuggestBox>
-	      <g:Button ui:field="liveSearchButton" text="Live Search" styleName="btn btn-primary"/>
-	      <g:Button ui:field="serverSearchButton" text="Server Search" styleName="btn btn-primary"/>
+	      
+		  <g:HorizontalPanel spacing="0" verticalAlignment="middle">
+			  <g:SuggestBox ui:field="searchBox" width="300px" styleName="form-control">
+			    <g:MultiWordSuggestOracle/>
+			  </g:SuggestBox>
+			  
+			  <g:Button ui:field="clearSearchButton" styleName="btn clear-search-button " title="Xóa tìm kiếm" />
+
+		</g:HorizontalPanel>
+	      <g:Button ui:field="searchButton" text="Tìm kiếm" styleName="btn btn-primary"/>
 	      <g:HTMLPanel width="30px" height="30px">
 	        <div ui:field="spinnerContainer" style="width:30px; height:30px; display:flex; align-items:center; justify-content:center;">
 	          <div ui:field="spinner" class="small-spinner" style="display:none;"></div>
@@ -30,12 +35,28 @@
 	      <g:Button ui:field="toggleSelectAllButton" text="Select / Deselect All Contacts" styleName="btn btn-sm  btn-primary action-button"/>
 	    </g:HorizontalPanel>
 	    
+	    <g:HTMLPanel styleName="filter-panel">
+		  <label>Giới tính:</label>
+		  <g:ValueListBox ui:field="genderValueListBox" />
+		  <label>Địa chỉ:</label>
+		  <g:ValueListBox ui:field="addressValueListBox" />
+		  <g:Button text="Đặt lại" ui:field="resetFilterBtn" styleName="btn btn-secondary"/>
+		</g:HTMLPanel>
+		
 		<!-- Table Section with scroll -->
-		  <g:ScrollPanel width="100%" height="400px" ui:field="tableScrollPanel">
-		  	<g:VerticalPanel spacing="10" height="100%" width="100%" horizontalAlignment="ALIGN_CENTER">
-		    	<c:CellTable ui:field="contactTable" width="80%" styleName="table table-bordered table-hover"/>
-		    </g:VerticalPanel>
-		  </g:ScrollPanel>
+<!-- 		  <g:ScrollPanel width="100%" height="400px" ui:field="tableScrollPanel"> -->
+<!-- 		  	<g:VerticalPanel spacing="10" height="100%" width="100%" horizontalAlignment="ALIGN_CENTER"> -->
+<!-- 		    	<c:CellTable ui:field="contactTable" width="80%" styleName="table table-bordered table-hover"/> -->
+<!-- 		    </g:VerticalPanel> -->
+<!-- 		  </g:ScrollPanel> -->
+			<!-- Table -->
+		    <c:CellTable ui:field="contactTable" width="80%" styleName="table table-bordered table-hover"/>
+		
+		    <!-- Pager -->
+		    <c:SimplePager ui:field="pager" location="CENTER"/>
+
+
+
 	  </g:VerticalPanel>
  
 </ui:UiBinder>

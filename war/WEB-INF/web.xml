@@ -13,7 +13,7 @@
   
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/gwt_basic/greet</url-pattern>
+    <url-pattern>/data_service/greet</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
