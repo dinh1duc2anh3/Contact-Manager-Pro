@@ -10,12 +10,12 @@ public interface MyDB {
 	List<ContactInfo> findAll();
 	void add(ContactInfo contactInfo) throws ContactAlreadyExistsException, ContactNoneExistsException;
 	void update(ContactInfo selectedContact, ContactInfo updatedContact) throws ContactAlreadyExistsException, ContactNoneExistsException;
-	void delete(List<String> phoneNumbers) throws ContactNoneExistsException;
-	void deleteByPhoneNumber(String phoneNumber) throws ContactNoneExistsException;
+	void delete(List<String> phoneNumbers) throws ContactNoneExistsException, ContactAlreadyExistsException;
+	void deleteByPhoneNumber(String phoneNumber) throws ContactNoneExistsException, ContactAlreadyExistsException;
 	
 	List<ContactInfo> findByFirstName(String firstname) throws ContactNoneExistsException ;
 	List<ContactInfo> findByFullName(String fullname) throws ContactNoneExistsException;
-	ContactInfo findByPhoneNumber(String phoneNumber) ;
+	ContactInfo findByPhoneNumber(String phoneNumber) throws ContactAlreadyExistsException ;
 	List<ContactInfo> startsWithPhoneNumber(String phoneNumber_part);
 	
 }

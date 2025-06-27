@@ -18,7 +18,7 @@ public interface GreetingService extends RemoteService {
 	
 	List<ContactInfo> getContactInfosByFullName(String fullName) throws ContactNoneExistsException;
 	
-	ContactInfo getContactInfosByPhoneNumber(String phoneNumber);
+	ContactInfo getContactInfosByPhoneNumber(String phoneNumber) throws ContactAlreadyExistsException;
 	
 	List<ContactInfo> startsWithPhoneNumber(String phoneNumber);
 
@@ -28,7 +28,7 @@ public interface GreetingService extends RemoteService {
 	
 	void updateContactInfo(ContactInfo selectedContact ,ContactInfo updatedContact) throws ContactAlreadyExistsException,ContactNoneExistsException;
 	
-	void deleteContactByPhoneNumber(String phoneNumber) throws ContactNoneExistsException;
+	void deleteContactByPhoneNumber(String phoneNumber) throws ContactNoneExistsException, ContactAlreadyExistsException;
 	
-	void deleteContacts(List<String> phoneNumbers) throws ContactNoneExistsException;
+	void deleteContacts(List<String> phoneNumbers) throws ContactNoneExistsException, ContactAlreadyExistsException;
 }

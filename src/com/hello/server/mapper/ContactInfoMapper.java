@@ -12,6 +12,7 @@ public class ContactInfoMapper {
         if (entity == null) return null;
 
         ContactInfo dto = new ContactInfo();
+        dto.setId(entity.getId());
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
         dto.setFullName();

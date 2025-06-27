@@ -72,7 +72,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 	}
 
 	@Override
-	public ContactInfo getContactInfosByPhoneNumber(String phoneNumber){
+	public ContactInfo getContactInfosByPhoneNumber(String phoneNumber) throws ContactAlreadyExistsException{
 		String formattedPhoneNumber = ContactInfoFormatter.formatPhoneNumber(phoneNumber);
 		return myDB.findByPhoneNumber(formattedPhoneNumber);
 	}
@@ -118,7 +118,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
 
     @Override
-    public void deleteContacts(List<String> phoneNumbers) throws ContactNoneExistsException {
+    public void deleteContacts(List<String> phoneNumbers) throws ContactNoneExistsException, ContactAlreadyExistsException {
         myDB.delete(phoneNumbers);
         return;
     }
@@ -126,7 +126,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     
 
     @Override
-    public void deleteContactByPhoneNumber(String phoneNumber) throws ContactNoneExistsException {
+    public void deleteContactByPhoneNumber(String phoneNumber) throws ContactNoneExistsException, ContactAlreadyExistsException {
         myDB.deleteByPhoneNumber(phoneNumber);
         return;
     }

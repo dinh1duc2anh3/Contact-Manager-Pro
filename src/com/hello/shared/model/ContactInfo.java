@@ -18,6 +18,9 @@ public class ContactInfo implements Serializable, IsSerializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Id
+    private Long id;
 	@Index
 	private String firstName;
 	
@@ -26,12 +29,9 @@ public class ContactInfo implements Serializable, IsSerializable {
 	private String fullName;
     
     private Gender gender;
-    
 
-	@Id
+	@Index
     private String phoneNumber;
-    @Index
-    private String phoneNumberForSearch;
 
     private Address address;
     @Index
@@ -52,7 +52,6 @@ public class ContactInfo implements Serializable, IsSerializable {
 		this.gender = gender;
 		this.address = address;
 		this.phoneNumber = ContactInfoFormatter.formatPhoneNumber(phoneNumber) ;
-		this.phoneNumberForSearch = this.phoneNumber;
 		this.createdDate = new Date();
 	}
 	
@@ -72,6 +71,14 @@ public class ContactInfo implements Serializable, IsSerializable {
 	@Override
 	public int hashCode() {
 		return Objects.hash(firstName, lastName,gender, phoneNumber, address, createdDate);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getFullName() {
@@ -118,7 +125,6 @@ public class ContactInfo implements Serializable, IsSerializable {
 	}
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
-		this.phoneNumberForSearch = phoneNumber;
 	}
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
@@ -134,9 +140,5 @@ public class ContactInfo implements Serializable, IsSerializable {
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
-    
-    public String getPhoneNumberForSearch() {
-		return phoneNumberForSearch;
-	}
 
 }

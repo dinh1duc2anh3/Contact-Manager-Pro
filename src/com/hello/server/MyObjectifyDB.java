@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.hello.server.mapper.ContactInfoMapper;
@@ -47,10 +48,11 @@ public class MyObjectifyDB implements MyDB  {
 	    List<ContactInfo> contactDTOs = ContactInfoMapper.toDTOList(contacts);
 	    System.out.println("Total contacts in Datastore: " + contactDTOs.size());
 	    for (ContactInfo contactDTO : contactDTOs) {
-	        System.out.println(contactDTO.getFirstName() + 
+	        System.out.println(
+	        		contactDTO.getId()+ 
+	        		" - " + contactDTO.getFirstName() + 
 	        		" - " + contactDTO.getLastName() + 
 	        		" - " + contactDTO.getPhoneNumber() + 
-	        		" - " + contactDTO.getPhoneNumberForSearch() +
 	        		" - " + contactDTO.getAddress()+ 
 	        		" - " + contactDTO.getCreatedDate()
 	        		);
@@ -101,21 +103,23 @@ public class MyObjectifyDB implements MyDB  {
 	}
 	
 	@Override
-	public ContactInfo findByPhoneNumber(String phoneNumber_format)  {
-		ContactInfo existing = ObjectifyService.ofy().load()
+	public ContactInfo findByPhoneNumber(String phoneNumber_format) throws ContactAlreadyExistsException  {
+		List<ContactInfo> existing = ObjectifyService.ofy().load()
 				.type(ContactInfo.class)
-				.id(phoneNumber_format)
-				.now();
+				.filter("phoneNumber =",phoneNumber_format)
+				.list();
 		
-		return ContactInfoMapper.toDTO(existing) ;
+		if (existing.size() != 1) throw new ContactAlreadyExistsException("Contact with duplicate phonenumber in system!");
+		
+		return ContactInfoMapper.toDTO(existing.get(0)) ;
 	}
 	
 	@Override
 	public List<ContactInfo> startsWithPhoneNumber(String phoneNumber_format)  {
 		List<ContactInfo> contacts = ObjectifyService.ofy().load()
 				.type(ContactInfo.class)
-				.filter("phoneNumberForSearch >=", phoneNumber_format)
-			    .filter("phoneNumberForSearch <", phoneNumber_format + "\ufffd")
+				.filter("phoneNumber >=", phoneNumber_format)
+			    .filter("phoneNumber <", phoneNumber_format + "\ufffd")
 				.list();
 		
 		return ContactInfoMapper.toDTOList(contacts) ;
@@ -147,47 +151,31 @@ public class MyObjectifyDB implements MyDB  {
 			throw new ContactAlreadyExistsException("Phone number already in use.");
 		}
 		
-		// Nếu đổi phoneNumber (ID) → phải xóa cái cũ và tạo cái mới
-	    boolean isPhoneChanged = !selectedContact.getPhoneNumber().equals(updatedContact.getPhoneNumber());
-		
-	    if (isPhoneChanged) {
-	        // Xoá contact cũ
-	        ObjectifyService.ofy().delete().type(ContactInfo.class).id(selectedContact.getPhoneNumber()).now();
+		// 2. Lấy contact từ DB bằng id
+	    ContactInfo contactInDB = ObjectifyService.ofy().load().type(ContactInfo.class)
+	        .id(selectedContact.getId()).now();
 
-	        // Tạo contact mới với createdDate mới (mặc định trong constructor)
-	        ContactInfo newContact = new ContactInfo(
-	            updatedContact.getFirstName(),
-	            updatedContact.getLastName(),
-	            updatedContact.getGender(),
-	            updatedContact.getPhoneNumber(),
-	            updatedContact.getAddress()
-	        );
-
-	        ObjectifyService.ofy().save().entity(newContact).now();
-	    } else {
-	        // Nếu không đổi phoneNumber → cập nhật thông thường
-	        ContactInfo contactInDB = ObjectifyService.ofy().load().type(ContactInfo.class)
-	            .id(selectedContact.getPhoneNumber()).now();
-
-	        if (contactInDB == null) {
-	            throw new IllegalStateException("Contact not found in DB.");
-	        }
-
-	        contactInDB.setFirstName(updatedContact.getFirstName());
-	        contactInDB.setLastName(updatedContact.getLastName());
-	        contactInDB.setFullName();
-	        contactInDB.setGender(updatedContact.getGender());
-	        contactInDB.setAddress(updatedContact.getAddress());
-
-	        ObjectifyService.ofy().save().entity(contactInDB).now();
+	    if (contactInDB == null) {
+	        throw new IllegalStateException("Contact not found in DB.");
 	    }
+
+	    // 3. Update thông tin
+	    contactInDB.setFirstName(updatedContact.getFirstName());
+	    contactInDB.setLastName(updatedContact.getLastName());
+	    contactInDB.setFullName(); // nếu bạn có
+	    contactInDB.setGender(updatedContact.getGender());
+	    contactInDB.setAddress(updatedContact.getAddress());
+	    contactInDB.setPhoneNumber(updatedContact.getPhoneNumber()); // có thể khác so với ban đầu
+
+	    ObjectifyService.ofy().save().entity(contactInDB).now();
+	    
 
 		log.info("Success: Updated contact info of " + selectedContact.getFullName());
 		return ;
 	}
 	
 	@Override
-	public void deleteByPhoneNumber(String phoneNumber) throws ContactNoneExistsException {
+	public void deleteByPhoneNumber(String phoneNumber) throws ContactNoneExistsException, ContactAlreadyExistsException {
 		//get contact
 		ContactInfo existing = findByPhoneNumber(phoneNumber);
 		
@@ -203,7 +191,7 @@ public class MyObjectifyDB implements MyDB  {
 	}
 
 	@Override
-	public void delete(List<String> phoneNumbers) throws ContactNoneExistsException {
+	public void delete(List<String> phoneNumbers) throws ContactNoneExistsException, ContactAlreadyExistsException {
 		for (String phoneNumber : phoneNumbers) {
 			System.out.println("deleting contact info with phoneNumber: " + phoneNumber);
 			deleteByPhoneNumber(phoneNumber);
