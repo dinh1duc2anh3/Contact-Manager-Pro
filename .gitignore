@@ -1,10 +1,10 @@
 .settings/
 gwt-unitCache/
 target/
+bin/
 war/*
 !war/images/
 !war/images/**
 !war/WEB-INF/web.xml
 !war/index.html
 !war/index.css
-
