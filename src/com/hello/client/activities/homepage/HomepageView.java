@@ -41,5 +41,4 @@ public interface HomepageView extends IsWidget {
 	// New methods for UI setup and event handling
     void setupUI();
     void setupContactTable(ListDataProvider<ContactInfo> dataProvider);
-	Column<ContactInfo, String> getFirstNameColumn();
 }

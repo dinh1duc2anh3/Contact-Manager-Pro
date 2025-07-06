@@ -55,19 +55,20 @@ public class ContactInfo implements Serializable, IsSerializable {
 		this.createdDate = new Date();
 	}
 	
-
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
-		ContactInfo that = (ContactInfo) obj;
-		return firstName.equals(that.firstName) &&
-			   lastName.equals(that.lastName) &&
-			   gender.equals(that.gender) &&
-			   phoneNumber.equals(that.phoneNumber) &&
-			   address.equals(that.address);
-	}
+	    if (this == obj) return true;
+	    if (obj == null || getClass() != obj.getClass()) return false;
+	    ContactInfo that = (ContactInfo) obj;
 
+	    return Objects.equals(id, that.id) &&
+	           Objects.equals(firstName, that.firstName) &&
+	           Objects.equals(lastName, that.lastName) &&
+	           gender == that.gender &&
+	           Objects.equals(phoneNumber, that.phoneNumber) &&
+	           address == that.address;
+	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(firstName, lastName,gender, phoneNumber, address, createdDate);
@@ -140,5 +141,9 @@ public class ContactInfo implements Serializable, IsSerializable {
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 
 }

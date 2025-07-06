@@ -24,10 +24,7 @@
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client' />
-	<source path="client/activities" />
-	<source path="client/activities/homepage" />
 	<source path="shared" />
-	<source path="shared/model" />
 
   <!-- allow Super Dev Mode -->
   <add-linker name="xsiframe"/>

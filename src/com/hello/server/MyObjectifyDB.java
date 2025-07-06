@@ -77,6 +77,17 @@ public class MyObjectifyDB implements MyDB  {
 	}
 	
 	@Override
+	public ContactInfo findById(Long id) throws ContactNoneExistsException {
+	    ContactInfo entity = ObjectifyService.ofy().load().type(ContactInfo.class).id(id).now();
+	    
+	    if (entity == null) {
+	        throw new ContactNoneExistsException("Contact with id " + id + " does not exist.");
+	    }
+	    
+	    return ContactInfoMapper.toDTO(entity);
+	}
+
+	@Override
 	public List<ContactInfo> findByFirstName(String firstname_format) throws ContactNoneExistsException  {
 		
 		List<ContactInfo> contacts = ObjectifyService.ofy().load().type(ContactInfo.class)
@@ -109,6 +120,8 @@ public class MyObjectifyDB implements MyDB  {
 				.filter("phoneNumber =",phoneNumber_format)
 				.list();
 		
+		if (existing.isEmpty()) return null;
+		
 		if (existing.size() != 1) throw new ContactAlreadyExistsException("Contact with duplicate phonenumber in system!");
 		
 		return ContactInfoMapper.toDTO(existing.get(0)) ;
@@ -137,25 +150,27 @@ public class MyObjectifyDB implements MyDB  {
 	
 
 	@Override
-	public void update(ContactInfo selectedContact, ContactInfo updatedContact) throws ContactAlreadyExistsException {
+	public void update(ContactInfo selectedContact, ContactInfo updatedContact) throws ContactAlreadyExistsException, ContactNoneExistsException {
 
 		
 		
-		System.out.println(this.getClass() + "updating contact: " + selectedContact.getFirstName() + selectedContact.getLastName());
+		System.out.println(this.getClass() + "updating contact: " + selectedContact.getFirstName() + selectedContact.getLastName() + selectedContact.getPhoneNumber());
 		//assume selected phone number has already existed
 		
 		// Check if updated phone number is already used by another contact  
+		System.out.println("Updating with phoneNumber: " + updatedContact.getPhoneNumber());
 		ContactInfo existing = findByPhoneNumber(updatedContact.getPhoneNumber());
 		
-		if (existing != null && !existing.getPhoneNumber().equals(selectedContact.getPhoneNumber()) ) {
+		if (existing != null && !existing.getId().equals(selectedContact.getId()) ) {
+			System.out.println("Throwing ContactAlreadyExistsException for phone: " + updatedContact.getPhoneNumber());
 			throw new ContactAlreadyExistsException("Phone number already in use.");
 		}
 		
 		// 2. Lấy contact từ DB bằng id
-	    ContactInfo contactInDB = ObjectifyService.ofy().load().type(ContactInfo.class)
-	        .id(selectedContact.getId()).now();
+	    ContactInfo contactInDB = findById(selectedContact.getId());
 
 	    if (contactInDB == null) {
+	    	System.out.println("Contact not found in DB: " + selectedContact.getId());
 	        throw new IllegalStateException("Contact not found in DB.");
 	    }
 
@@ -191,7 +206,7 @@ public class MyObjectifyDB implements MyDB  {
 	}
 
 	@Override
-	public void delete(List<String> phoneNumbers) throws ContactNoneExistsException, ContactAlreadyExistsException {
+	public void deleteByPhoneNumbers(List<String> phoneNumbers) throws ContactNoneExistsException, ContactAlreadyExistsException {
 		for (String phoneNumber : phoneNumbers) {
 			System.out.println("deleting contact info with phoneNumber: " + phoneNumber);
 			deleteByPhoneNumber(phoneNumber);
@@ -199,9 +214,28 @@ public class MyObjectifyDB implements MyDB  {
 		
 		return ;
 	}
+	
+	@Override
+	public void deleteById(Long id) throws ContactNoneExistsException {
+	    // 1. Tìm contact theo ID
+	    ContactInfo existing = findById(id);
 
+	    if (existing == null) {
+	        log.severe("Error: Contact ID does not exist - " + id);
+	        throw new ContactNoneExistsException("Selected contact ID: " + id + " doesn't exist.");
+	    }
+
+	    // 2. Xoá contact
+	    ObjectifyService.ofy().delete().entity(existing).now();
+	    log.info("Successfully deleted contact info for ID " + id);
+	}
 	
-	
-	
+	@Override
+	public void deleteByIds(List<Long> ids) throws ContactNoneExistsException {
+	    for (Long id : ids) {
+	        System.out.println("Deleting contact info with ID: " + id);
+	        deleteById(id);
+	    }
+	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -36,37 +37,53 @@ public class DeleteContactActivity2 extends BasicActivity  {
     private GreetingServiceAsync greetingService;
     private Set<String> selectedPhoneNumbers;
     private ListDataProvider<ContactInfo> dataProvider;
-    
-    private Runnable onCompleteCallback;
 
-    public DeleteContactActivity2(
+	public DeleteContactActivity2(
         ClientFactory clientFactory,
-        DeleteContactPlace2 place,
-        GreetingServiceAsync greetingService,
-        ListDataProvider<ContactInfo> dataProvider,
-        Runnable onCompleteCallback
+        DeleteContactPlace2 place
     ) {
         super(clientFactory, place);
         this.view = clientFactory.getDeleteContactView2();
-        this.greetingService = greetingService;
-        this.dataProvider = dataProvider;
-        
-        
+        if (this.view == null) {
+            GWT.log("Error: DeleteContactView2 is null");
+            throw new IllegalStateException("DeleteContactView2 is null");
+        }
+        this.greetingService = clientFactory.getGreetingService();
+        this.dataProvider = clientFactory.getDataProvider();
         this.selectedPhoneNumbers = place.getPhoneNumbers(); // Lấy từ URL
-        this.onCompleteCallback = onCompleteCallback;
-        bind();
+        
     }
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
         panel.setWidget(view.asWidget());
+        GWT.log("DeleteContactActivity2 - bind3");
+        if (handlerRegistrations.isEmpty()) {
+            bind();
+            GWT.log("DeleteContactActivity2 - bind3 - done");
+        }
         view.getConfirmLabel().setText("Xác nhận xoá " + selectedPhoneNumbers.size() + " liên hệ?");
     }
     
     @Override
     protected void bind() {
-        view.getYesButton().addClickHandler(e -> onDelete());
-        view.getNoButton().addClickHandler(e -> clientFactory.getPlaceController().goTo(new HomepagePlace()));
+        if (view.getYesButton() == null || view.getNoButton() == null) {
+            GWT.log("Error: YesButton or NoButton is null");
+            return;
+        }
+        super.bind();
+        addHandlerRegistration(view.getYesButton().addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                onDelete();
+            }
+        }));
+        addHandlerRegistration(view.getNoButton().addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                clientFactory.getPlaceController().goTo(new HomepagePlace());
+            }
+        }));
     }
     
     private void onDelete() {
@@ -88,16 +105,16 @@ public class DeleteContactActivity2 extends BasicActivity  {
                 dataProvider.refresh();
                 Window.alert("Đã xoá thành công");
                 clientFactory.getPlaceController().goTo(new HomepagePlace());
-                handleCallback();
             }
         });
     }
     
-    private void handleCallback() {
-    	if (onCompleteCallback != null) {
-		    onCompleteCallback.run(); // gọi loadData()
-		}
-    }
+    public Set<String> getSelectedPhoneNumbers() {
+		return selectedPhoneNumbers;
+	}
 
+	public void setSelectedPhoneNumbers(Set<String> selectedPhoneNumbers) {
+		this.selectedPhoneNumbers = selectedPhoneNumbers;
+	}
 
 }

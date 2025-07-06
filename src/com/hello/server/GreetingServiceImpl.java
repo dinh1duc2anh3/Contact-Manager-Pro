@@ -58,6 +58,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 	}
 	
+	@Override
+    public ContactInfo getContactInfoById(Long id) throws ContactNoneExistsException  {
+    	return myDB.findById(id);
+    }
+	
     @Override
     public List<ContactInfo> getContactInfosByFirstName(String firstName) throws ContactNoneExistsException  {
     	String formattedFirstName = ContactInfoFormatter.formatName(firstName);
@@ -91,8 +96,6 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     @Override
 	public void addContactInfo(ContactInfo newContact) throws ContactAlreadyExistsException {
-
-		
 		if (myDB.findByPhoneNumber(newContact.getPhoneNumber()) != null ) {
 			log.warning("Error: Contact"+ newContact.getFirstName() + newContact.getLastName() + newContact.getPhoneNumber() + "already exists");
 			throw new ContactAlreadyExistsException("This contact already exists.");
@@ -103,27 +106,32 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     }
 
 
+    
     @Override
-    public void updateContactInfo(ContactInfo selectedContact, ContactInfo updatedContact)
-    		throws ContactAlreadyExistsException, ContactNoneExistsException{
-    	
-    	if (updatedContact.equals(selectedContact)) {
-            throw new ContactAlreadyExistsException("No changes detected. Please update at least one field.");
-        }
-    	
-    	myDB.update(selectedContact, updatedContact);
-    	return;
+    public void updateContactInfo(ContactInfo selectedContact, ContactInfo updatedContact) 
+            throws ContactAlreadyExistsException, ContactNoneExistsException {
+        System.out.println("GreetingServiceImpl: Calling update for phone: " + updatedContact.getPhoneNumber());
+        myDB.update(selectedContact, updatedContact);
     }
 
 
 
     @Override
     public void deleteContacts(List<String> phoneNumbers) throws ContactNoneExistsException, ContactAlreadyExistsException {
-        myDB.delete(phoneNumbers);
+        myDB.deleteByPhoneNumbers(phoneNumbers);
         return;
     }
     
     
+    @Override
+    public void deleteContactsByIds(List<Long> ids) throws ContactNoneExistsException {
+        myDB.deleteByIds(ids);
+    }
+    
+    @Override
+    public void deleteContactById(Long id) throws ContactNoneExistsException {
+        myDB.deleteById(id);
+    }
 
     @Override
     public void deleteContactByPhoneNumber(String phoneNumber) throws ContactNoneExistsException, ContactAlreadyExistsException {

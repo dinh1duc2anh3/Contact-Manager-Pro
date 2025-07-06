@@ -1,6 +1,10 @@
 package com.hello.client.activities.basic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -15,6 +19,7 @@ public class BasicActivity extends MGWTAbstractActivity {
 	protected ClientFactory clientFactory;
 	protected EventBus eventBus;
 	protected Place place;
+	protected List<HandlerRegistration> handlerRegistrations = new ArrayList<>();
 	
 	public BasicActivity(ClientFactory clientFactory, Place place) {
 		super();
@@ -41,6 +46,22 @@ public class BasicActivity extends MGWTAbstractActivity {
 			}
 		}));
 	}
+	
+	protected void addHandlerRegistration(HandlerRegistration registration) {
+        handlerRegistrations.add(registration);
+    }
+
+    protected void clearHandlers() {
+        for (HandlerRegistration registration : handlerRegistrations) {
+            registration.removeHandler();
+        }
+        handlerRegistrations.clear();
+    }
+
+    @Override
+    public void onStop() {
+        clearHandlers();
+    }
 	
 	public void loadData() {
 		

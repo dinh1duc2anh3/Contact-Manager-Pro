@@ -3,6 +3,9 @@ package com.hello.client.activities.homepage;
 import java.util.Comparator;
 import java.util.Set;
 
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.gwt.cell.client.ActionCell;
+import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.core.client.GWT;
@@ -31,6 +34,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.hello.client.activities.addupdate2.AddUpdateContactPlace2;
 import com.hello.client.activities.addupdateDialog.AddUpdateContactActivity;
+import com.hello.client.events.EditContactEvent;
 import com.hello.shared.enums.ActionType;
 import com.hello.shared.enums.Address;
 import com.hello.shared.enums.Gender;
@@ -72,11 +76,16 @@ public class HomepageViewImpl extends Composite implements HomepageView {
     
     @UiField SimplePager pager;
     
-    private Column<ContactInfo, String> firstNameColumn;
+    
+    private final EventBus eventBus;
+    
 
     private final MultiSelectionModel<ContactInfo> selectionModel = new MultiSelectionModel<>();
+    private boolean isTableInitialized = false;
+	
+    
 
-    public HomepageViewImpl() {
+    public HomepageViewImpl(EventBus eventBus) {
     	genderValueListBox = new ValueListBox<>(new AbstractRenderer<Gender>() {
             @Override
             public String render(Gender gender) {
@@ -90,6 +99,8 @@ public class HomepageViewImpl extends Composite implements HomepageView {
                 return address == null ? "Tất cả" : address.toString();
             }
         });
+        
+        this.eventBus = eventBus;
         
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -105,7 +116,9 @@ public class HomepageViewImpl extends Composite implements HomepageView {
     
     @Override
     public void setupContactTable(ListDataProvider<ContactInfo> dataProvider) {
-        
+    	if (isTableInitialized) {
+            return; 
+        }
         pager.setDisplay(contactTable);
         contactTable.setPageSize(5);
         contactTable.setSelectionModel(selectionModel, DefaultSelectionEventManager.<ContactInfo>createCheckboxManager());
@@ -124,7 +137,7 @@ public class HomepageViewImpl extends Composite implements HomepageView {
         };
 
         // Column: First Name
-        firstNameColumn = new Column<ContactInfo, String>(new ClickableTextCell()) {
+        Column<ContactInfo, String> firstNameColumn = new Column<ContactInfo, String>(new ClickableTextCell()) {
             @Override
             public String getValue(ContactInfo contact) {
                 return contact.getFirstName();
@@ -163,13 +176,22 @@ public class HomepageViewImpl extends Composite implements HomepageView {
                 return object.getAddressStr();
             }
         };
-
+        
+        // Tạo ButtonCell
+        Column<ContactInfo, String> editColumn = new Column<ContactInfo, String>(new ButtonCell()) {
+            @Override
+            public String getValue(ContactInfo contact) {
+                return "Edit";
+            }
+        };
+        
         contactTable.addColumn(checkColumn, "CheckBox");
         contactTable.addColumn(firstNameColumn, "First Name");
         contactTable.addColumn(lastNameColumn, "Last Name");
         contactTable.addColumn(genderColumn, "Gender");
         contactTable.addColumn(phoneNumberColumn, "Phone Number");
         contactTable.addColumn(addressColumn, "Address");
+        contactTable.addColumn(editColumn, "Edit Contact");
 
         firstNameColumn.setSortable(true);
         lastNameColumn.setSortable(true);
@@ -182,15 +204,31 @@ public class HomepageViewImpl extends Composite implements HomepageView {
         sortHandler.setComparator(genderColumn, Comparator.comparing(ContactInfo::getGenderStr));
         sortHandler.setComparator(phoneNumberColumn, Comparator.comparing(ContactInfo::getPhoneNumber));
         sortHandler.setComparator(addressColumn, Comparator.comparing(ContactInfo::getAddressStr));
+      
+        
+        // Gắn FieldUpdater để xử lý click
+        editColumn.setFieldUpdater((index, contact, value) -> {
+            if (eventBus != null) {
+                eventBus.fireEvent(new EditContactEvent(contact));
+            } else {
+                GWT.log("Error: eventBus is null in HomepageViewImpl");
+            }
+        });
+        
+        firstNameColumn.setFieldUpdater((index, contact, value) -> {
+    	    if (eventBus != null) {
+                eventBus.fireEvent(new EditContactEvent(contact));
+            } else {
+                GWT.log("Error: eventBus is null in HomepageViewImpl");
+            }
+    	});
+    	
         
         
+        
+        isTableInitialized = true;
     }
     
-    @Override
-    public Column<ContactInfo, String> getFirstNameColumn() {
-        return firstNameColumn;
-    }
-
 	@Override
     public SuggestBox getSearchBox() {
         return searchBox;
@@ -276,6 +314,6 @@ public class HomepageViewImpl extends Composite implements HomepageView {
 	public Element getSpinner() {
 		return spinner;
 	}
-	
+
 	
 }
