@@ -76,9 +76,7 @@ public class HomepageViewImpl extends Composite implements HomepageView {
     
     @UiField SimplePager pager;
     
-    
     private final EventBus eventBus;
-    
 
     private final MultiSelectionModel<ContactInfo> selectionModel = new MultiSelectionModel<>();
     private boolean isTableInitialized = false;

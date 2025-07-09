@@ -10,6 +10,7 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.hello.server.mapper.ContactInfoMapper;
 import com.hello.shared.model.ContactInfo;
+import com.hello.shared.cache.ContactInfoCache;
 import com.hello.shared.exception.ContactAlreadyExistsException;
 import com.hello.shared.exception.ContactNoneExistsException;
 
@@ -42,7 +43,7 @@ public class MyObjectifyDB implements MyDB  {
 	            .list();
 	}
 	
-	public void printAllContacts() {
+	public void printAllContactsServer() {
 	    List<ContactInfo> contacts = ObjectifyService.ofy().load().type(ContactInfo.class).order("createdDate").list();
 	    
 	    List<ContactInfo> contactDTOs = ContactInfoMapper.toDTOList(contacts);
@@ -59,6 +60,7 @@ public class MyObjectifyDB implements MyDB  {
 	    }
 	}
 	
+	
 	@Override
 	public List<ContactInfo> findAll() {
 		System.out.println("Getting all contacts: " );
@@ -71,7 +73,7 @@ public class MyObjectifyDB implements MyDB  {
 		List<ContactInfo> contactDTOs = ContactInfoMapper.toDTOList(contacts);
 		System.out.println("Total contacts get from Datastore: " + contactDTOs.size());
 		
-		printAllContacts();
+		printAllContactsServer();
 		return contactDTOs;
         
 	}

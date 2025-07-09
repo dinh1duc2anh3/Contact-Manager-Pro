@@ -260,6 +260,22 @@ public class HomepageActivity extends BasicActivity {
 //        applyFilters();
     }
     
+    public void updateSuggestBoxOracle() {
+    	MultiWordSuggestOracle oracle =  (MultiWordSuggestOracle ) view.getSearchBox().getSuggestOracle() ;
+        oracle.clear();
+        for (ContactInfo contact : ContactInfoCache.getCurrentContacts()) {
+        	String fullName = contact.getFullName();
+        	if (fullName != null && !fullName.isEmpty()) {
+        	    oracle.add(fullName);
+        	}
+
+        	String phone = contact.getPhoneNumber();
+        	if (phone != null && !phone.isEmpty()) {
+        	    oracle.add(phone);
+        	}
+        	GWT.log(fullName+ phone);
+        }
+    }
     
 	@Override
     public void loadData() {
@@ -283,19 +299,11 @@ public class HomepageActivity extends BasicActivity {
                 
                 ContactInfoCache.setCurrentContacts(result);
                 
-                MultiWordSuggestOracle oracle =  (MultiWordSuggestOracle ) view.getSearchBox().getSuggestOracle() ;
-                for (ContactInfo contact : ContactInfoCache.getCurrentContacts()) {
-                	String fullName = contact.getFullName();
-                	if (fullName != null && !fullName.isEmpty()) {
-                	    oracle.add(fullName);
-                	}
-
-                	String phone = contact.getPhoneNumber();
-                	if (phone != null && !phone.isEmpty()) {
-                	    oracle.add(phone);
-                	}
-                }
+                updateSuggestBoxOracle();
             }
         });
+        
+        
+       
     }
 }

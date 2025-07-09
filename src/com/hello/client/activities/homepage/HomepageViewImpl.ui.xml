@@ -3,60 +3,90 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:c='urn:import:com.google.gwt.user.cellview.client'>
 
+<g:VerticalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER">
+	<g:HTMLPanel styleName="container-fluid">
+	
+	
+		<g:HTMLPanel styleName="search-panel w-100">
+		    <div class="d-flex flex-column flex-md-row align-items-center gap-2 search-container">
+		      <!-- SuggestBox -->
+		      <div class="flex-grow-1 w-100 w-md-auto search-box-wrapper" style="flex: 7 !important;">
+		        <g:SuggestBox ui:field="searchBox" styleName="form-control search-box" width="100%"/>
+		      </div>
+		      <!-- Buttons and Spinner -->
+		      <div class="d-flex flex-row w-100 w-md-auto gap-2 button-container" style="flex: 5 !important;">
+		        <div class="flex-fill">
+		          <g:Button ui:field="clearSearchButton" styleName="btn btn-secondary w-100" text="Clear"/>
+		        </div>
+		        <div class="flex-fill">
+		          <g:Button ui:field="searchButton" styleName="btn btn-primary w-100" text="Tìm kiếm"/>
+		        </div>
+		        <div class="text-center spinner-wrapper" style="min-width: 30px;">
+		          <g:HTMLPanel width="30px" height="30px">
+		            <div ui:field="spinnerContainer" style="width:30px; height:30px; display:flex; align-items:center; justify-content:center;">
+		              <div ui:field="spinner" class="small-spinner" style="display:none;"></div>
+		            </div>
+		          </g:HTMLPanel>
+		        </div>
+		      </div>
+		    </div>
+		  </g:HTMLPanel>
+			
+		    <!-- Error -->
+		    <g:Label ui:field="errorLabel" styleName="text-danger"/>
+		    
+		    
+		    <g:HTMLPanel styleName="row mb-3">
+			  <div class="col-6 col-sm-6 col-md-3 mb-2">
+			    <g:Button ui:field="addContactButton" styleName="btn btn-success btn-block" text="Add"/>
+			  </div>
+			  <div class="col-6 col-sm-6 col-md-3 mb-2">
+			    <g:Button ui:field="updateContactButton" styleName="btn btn-warning btn-block" text="Update"/>
+			  </div>
+			  <div class="col-6 col-sm-6 col-md-3 mb-2">
+			    <g:Button ui:field="deleteContactButton" styleName="btn btn-danger btn-block" text="Delete"/>
+			  </div>
+			  <div class="col-6 col-sm-6 col-md-3 mb-2">
+			    <g:Button ui:field="toggleSelectAllButton" styleName="btn btn-primary btn-block" text="Select / Deselect"/>
+			  </div>
+			</g:HTMLPanel>
+		    
+		    
+		    <!-- Filters -->
+		     <g:HTMLPanel styleName="row mb-3">
+				  <div class="col-12 col-md-4 mb-2">
+				    <label>Giới tính:</label>
+				    <g:ValueListBox ui:field="genderValueListBox" styleName="form-control"/>
+				  </div>
+				  <div class="col-12 col-md-4 mb-2">
+				    <label>Địa chỉ:</label>
+				    <g:ValueListBox ui:field="addressValueListBox" styleName="form-control"/>
+				  </div>
+				  <div class="col-12 col-md-4 mb-2 d-flex align-items-end">
+				    <g:Button text="Đặt lại" ui:field="resetFilterBtn" styleName="btn btn-secondary w-100"/>
+				  </div>
+				</g:HTMLPanel>
+			<!-- Table Section with scroll -->
+	<!-- 		  <g:ScrollPanel width="100%" height="400px" ui:field="tableScrollPanel"> -->
+	<!-- 		  	<g:VerticalPanel spacing="10" height="100%" width="100%" horizontalAlignment="ALIGN_CENTER"> -->
+	<!-- 		    	<c:CellTable ui:field="contactTable" width="80%" styleName="table table-bordered table-hover"/> -->
+	<!-- 		    </g:VerticalPanel> -->
+	<!-- 		  </g:ScrollPanel> -->
+				
+			
+			    <!-- Pager -->
+			    <c:SimplePager ui:field="pager" location="CENTER"/>
+			    <g:HTMLPanel styleName="table-responsive">
+				 	<g:HTMLPanel styleName="custom-overflow">
+					    <c:CellTable ui:field="contactTable" width="100%" styleName="table table-bordered table-hover"/>
+					  </g:HTMLPanel>
+						
+				</g:HTMLPanel>
+	
+	
 
-	  <g:VerticalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER">
-	    <!-- Search -->
-	    <g:HorizontalPanel spacing="10" width="100%" horizontalAlignment="ALIGN_CENTER" verticalAlignment="middle" styleName="search-panel">
-	      
-		  <g:HorizontalPanel spacing="0" verticalAlignment="middle">
-			  <g:SuggestBox ui:field="searchBox" width="300px" styleName="form-control">
-			    <g:MultiWordSuggestOracle/>
-			  </g:SuggestBox>
-			  
-			  <g:Button ui:field="clearSearchButton" styleName="btn clear-search-button " title="Xóa tìm kiếm" />
-
-		</g:HorizontalPanel>
-	      <g:Button ui:field="searchButton" text="Tìm kiếm" styleName="btn btn-primary"/>
-	      <g:HTMLPanel width="30px" height="30px">
-	        <div ui:field="spinnerContainer" style="width:30px; height:30px; display:flex; align-items:center; justify-content:center;">
-	          <div ui:field="spinner" class="small-spinner" style="display:none;"></div>
-	        </div>
-	      </g:HTMLPanel>
-	    </g:HorizontalPanel>
-	    
-	    <!-- Error -->
-	    <g:Label ui:field="errorLabel" styleName="text-danger"/>
-	    
-	    <!-- Actions -->
-	    <g:HorizontalPanel spacing="10" verticalAlignment="middle" styleName="action-panel" horizontalAlignment="right">
-	      <g:Button ui:field="addContactButton" text="Add Contact" styleName="btn btn-sm btn-success action-button"/>
-	      <g:Button ui:field="updateContactButton" text="Update Contact" styleName="btn btn-sm btn-warning action-button"/>
-	      <g:Button ui:field="deleteContactButton" text="Delete Contact" styleName="btn btn-sm btn-danger action-button"/>
-	      <g:Button ui:field="toggleSelectAllButton" text="Select / Deselect All Contacts" styleName="btn btn-sm  btn-primary action-button"/>
-	    </g:HorizontalPanel>
-	    
-	    <g:HTMLPanel styleName="filter-panel">
-		  <label>Giới tính:</label>
-		  <g:ValueListBox ui:field="genderValueListBox" />
-		  <label>Địa chỉ:</label>
-		  <g:ValueListBox ui:field="addressValueListBox" />
-		  <g:Button text="Đặt lại" ui:field="resetFilterBtn" styleName="btn btn-secondary"/>
 		</g:HTMLPanel>
-		
-		<!-- Table Section with scroll -->
-<!-- 		  <g:ScrollPanel width="100%" height="400px" ui:field="tableScrollPanel"> -->
-<!-- 		  	<g:VerticalPanel spacing="10" height="100%" width="100%" horizontalAlignment="ALIGN_CENTER"> -->
-<!-- 		    	<c:CellTable ui:field="contactTable" width="80%" styleName="table table-bordered table-hover"/> -->
-<!-- 		    </g:VerticalPanel> -->
-<!-- 		  </g:ScrollPanel> -->
-			<!-- Table -->
-		    <c:CellTable ui:field="contactTable" width="80%" styleName="table table-bordered table-hover"/>
-		
-		    <!-- Pager -->
-		    <c:SimplePager ui:field="pager" location="CENTER"/>
-
-
-
-	  </g:VerticalPanel>
+	</g:VerticalPanel>
+	  
  
 </ui:UiBinder>
