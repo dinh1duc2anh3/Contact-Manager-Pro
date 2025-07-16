@@ -32,7 +32,6 @@ import com.hello.client.ClientUtils;
 import com.hello.client.GreetingServiceAsync;
 import com.hello.client.activities.ClientFactory;
 import com.hello.client.activities.addupdate2.AddUpdateContactPlace2;
-import com.hello.client.activities.addupdateDialog.AddUpdateContactActivity;
 import com.hello.client.activities.basic.BasicActivity;
 import com.hello.client.activities.contact.ContactPlace;
 import com.hello.client.activities.delete.DeleteContactPlace2;
@@ -44,7 +43,7 @@ import com.hello.shared.cache.ContactInfoCache;
 import com.hello.shared.enums.ActionType;
 import com.hello.shared.enums.Address;
 import com.hello.shared.enums.Gender;
-import com.hello.shared.handler.ActionContactHomepageHandler;
+//import com.hello.shared.handler.ActionContactHomepageHandler;
 import com.hello.shared.handler.LiveSearchContactHandler;
 import com.hello.shared.handler.SearchContactHandler;
 import com.hello.shared.handler.ServerSearchContactHandler;
@@ -65,10 +64,9 @@ public class HomepageActivity extends BasicActivity {
   
     public HomepageActivity(ClientFactory clientFactory, Place place) {
 		super(clientFactory, place);
-		this.place = new HomepagePlace();
+		this.place = clientFactory.getHomepagePlace();
 		this.greetingService = clientFactory.getGreetingService();
 		this.dataProvider = clientFactory.getDataProvider();
-		clientFactory.setHomePageActivity(this); // important
 	}
 
     @Override
@@ -86,7 +84,6 @@ public class HomepageActivity extends BasicActivity {
     @Override
     public void onStop() {
         GWT.log("HomepageActivity - onStop: Removing handlers");
-        clientFactory.setHomePageActivity(null);
         super.onStop();
     }
 

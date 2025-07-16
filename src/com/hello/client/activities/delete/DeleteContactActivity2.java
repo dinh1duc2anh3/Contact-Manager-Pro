@@ -7,6 +7,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -26,32 +27,28 @@ import com.hello.client.GreetingServiceAsync;
 import com.hello.client.activities.ClientFactory;
 import com.hello.client.activities.ClientFactoryImpl;
 import com.hello.client.activities.basic.BasicActivity;
-import com.hello.client.activities.deleteDialog.DeleteContactView;
 import com.hello.client.activities.homepage.HomepagePlace;
 import com.hello.shared.utils.OverlayUtil;
 import com.hello.shared.model.ContactInfo;
 import com.hello.shared.cache.ContactInfoCache;
 
 public class DeleteContactActivity2 extends BasicActivity  {
-    private DeleteContactView2 view;
-    private GreetingServiceAsync greetingService;
+    private GreetingServiceAsync greetingService = clientFactory.getGreetingService();
+    private ListDataProvider<ContactInfo> dataProvider = clientFactory.getDataProvider();
+    private DeleteContactView2 view ;
     private Set<String> selectedPhoneNumbers;
-    private ListDataProvider<ContactInfo> dataProvider;
 
 	public DeleteContactActivity2(
         ClientFactory clientFactory,
-        DeleteContactPlace2 place
-    ) {
+        Place place) {
         super(clientFactory, place);
-        this.view = clientFactory.getDeleteContactView2();
-        if (this.view == null) {
-            GWT.log("Error: DeleteContactView2 is null");
-            throw new IllegalStateException("DeleteContactView2 is null");
-        }
-        this.greetingService = clientFactory.getGreetingService();
-        this.dataProvider = clientFactory.getDataProvider();
-        this.selectedPhoneNumbers = place.getPhoneNumbers(); // Lấy từ URL
+        this.view =  clientFactory.getDeleteContactView2();
+        this.selectedPhoneNumbers = ( (DeleteContactPlace2) place).getPhoneNumbers(); // Lấy từ URL
         
+        if (view == null ) {
+            GWT.log("View is null");
+            throw new IllegalStateException("DeleteContactView2 not fully initialized");
+        }
     }
 
     @Override
@@ -67,17 +64,19 @@ public class DeleteContactActivity2 extends BasicActivity  {
     
     @Override
     protected void bind() {
+    	GWT.log("1");
         if (view.getYesButton() == null || view.getNoButton() == null) {
             GWT.log("Error: YesButton or NoButton is null");
             return;
         }
-        super.bind();
+        GWT.log("2");
         addHandlerRegistration(view.getYesButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 onDelete();
             }
         }));
+        GWT.log("3");
         addHandlerRegistration(view.getNoButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -111,10 +110,6 @@ public class DeleteContactActivity2 extends BasicActivity  {
     
     public Set<String> getSelectedPhoneNumbers() {
 		return selectedPhoneNumbers;
-	}
-
-	public void setSelectedPhoneNumbers(Set<String> selectedPhoneNumbers) {
-		this.selectedPhoneNumbers = selectedPhoneNumbers;
 	}
 
 }

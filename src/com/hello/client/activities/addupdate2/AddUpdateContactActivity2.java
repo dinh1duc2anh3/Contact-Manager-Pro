@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-
+import com.google.web.bindery.event.shared.EventBus;
 import com.hello.client.GreetingServiceAsync;
 import com.hello.client.activities.ClientFactory;
 import com.hello.client.activities.ClientFactoryImpl;
@@ -32,47 +32,38 @@ import com.hello.shared.exception.ContactAlreadyExistsException;
 import com.hello.shared.exception.ContactNoneExistsException;
 
 public class AddUpdateContactActivity2 extends BasicActivity {
-	private AddUpdateContactView2 view;
-	protected GreetingServiceAsync greetingService;
-
-	protected ListDataProvider<ContactInfo> dataProvider;
-	protected MultiSelectionModel<ContactInfo> multiSelectionModel;
+	private AddUpdateContactView2 view = clientFactory.getAddUpdateContactView2();
+	protected GreetingServiceAsync greetingService = clientFactory.getGreetingService();
+	protected ListDataProvider<ContactInfo> dataProvider = clientFactory.getDataProvider();
 	private ActionType actionType;
-	
-
-	private boolean isCallbackHandled = false;
-	
 	protected ContactInfo selectedContact;
-//	protected Set<ContactInfo> selectedContacts;
 	
+	protected MultiSelectionModel<ContactInfo> multiSelectionModel;
+	private boolean isCallbackHandled = false;
 
 	public AddUpdateContactActivity2(
 			ClientFactory clientFactory, 
-			Place place,
-			ActionType actionType) {
+			Place place) {
 		super(clientFactory, place);
-		this.view = clientFactory.getAddUpdateContactView2();
-		if (this.view == null) {
-            GWT.log("Error: AddUpdateContactView2 is null");
-            throw new IllegalStateException("AddUpdateContactView2 is null");
-        }
-		this.greetingService = clientFactory.getGreetingService();
-		this.dataProvider = clientFactory.getDataProvider();
-		this.actionType = actionType;
 	
 		String phone = ((AddUpdateContactPlace2) place).getPhoneNumber();
 		this.selectedContact = (phone != null) ? ContactInfoCache.getByPhoneNumber(phone) : null;
 		
-		// Lưu instance vào ClientFactory
-        clientFactory.setAddUpdateContactActivity2(this);
+		ActionType actionType = ((AddUpdateContactPlace2) place).getActionType();
+		this.actionType = actionType;
+
+		if (this.view == null) {
+			GWT.log("Error: AddUpdateContactView2 is null");
+			throw new IllegalStateException("AddUpdateContactView2 is null");
+		}
 	}
 
 	@Override
-	public void start(AcceptsOneWidget panel, com.google.gwt.event.shared.EventBus eventBus) {
+	public void start(AcceptsOneWidget panel,  com.google.gwt.event.shared.EventBus eventBus) {
 		panel.setWidget(view.asWidget());
 		super.start(panel, eventBus, view);
         GWT.log("AddUpdateContactActivity2 - bind2");
-        bind(); // Bind mỗi khi start, HandlerManager sẽ quản lý handler
+//        bind(); // Bind mỗi khi start, HandlerManager sẽ quản lý handler
         // Chỉ bind nếu chưa bind
         if (handlerRegistrations.isEmpty()) {
             GWT.log("AddUpdateContactActivity2 - bind2");
@@ -80,15 +71,12 @@ public class AddUpdateContactActivity2 extends BasicActivity {
             GWT.log("AddUpdateContactActivity2 - bind2 - done");
         }
         loadData();
-        GWT.log("AddUpdateContactActivity2 - bind2 - done");
-        loadData();
 	}
 
 	@Override
     public void onStop() {
         GWT.log("AddUpdateContactActivity2 - onStop: Removing handlers");
         clearHandlers();
-        clientFactory.setAddUpdateContactActivity2(null);
         isCallbackHandled = false;
         super.onStop();
     }
@@ -225,24 +213,7 @@ public class AddUpdateContactActivity2 extends BasicActivity {
 		return actionType;
 	}
 
-	public void setActionType(ActionType actionType) {
-		this.actionType = actionType;
-	}
-
 	public ContactInfo getSelectedContact() {
 		return selectedContact;
 	}
-
-	public void setSelectedContact(ContactInfo selectedContact) {
-		this.selectedContact = selectedContact;
-	}
-	
-	public void setPlace(Place place) {
-	    this.place = place;
-	    String phone = ((AddUpdateContactPlace2) place).getPhoneNumber();
-        this.selectedContact = phone != null ? ContactInfoCache.getByPhoneNumber(phone) : null;
-        GWT.log("AddUpdateContactActivity2 - setPlace: " + place.getClass().getName());
-        loadData();
-	}
-	
 }

@@ -34,8 +34,6 @@ public class BasicActivity extends MGWTAbstractActivity {
 	
 	public void start(AcceptsOneWidget panel, EventBus eventBus, final BasicView basicView) {
 		this.eventBus = eventBus;
-		bind();
-		loadData();
 	}
 
 	protected void bind() {

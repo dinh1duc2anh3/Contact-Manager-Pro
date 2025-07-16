@@ -134,7 +134,6 @@ public class AsyncActivityManager implements PlaceChangeEvent.Handler,
 					startingNext = false;
 				} else if (!currentActivity.equals(NULL_ACTIVITY)) {
 					showWidget(null);
-
 					/*
 					 * Kill off the activity's handlers, so it doesn't have to worry
 					 * about them accidentally firing as a side effect of its tear down
