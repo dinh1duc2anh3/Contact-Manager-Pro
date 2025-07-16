@@ -13,11 +13,12 @@ import com.hello.client.activities.home.HomePlace;
 import com.hello.client.activities.homepage.HomepageActivity;
 import com.hello.client.activities.homepage.HomepagePlace;
 import com.hello.shared.cache.ContactInfoCache;
+import com.hello.shared.enums.ActionType;
 
 
 public class NormalAppActivityMapper implements AsyncActivityMapper {
 	
-	private ClientFactory clientFactory;
+	private ClientFactory clientFactory ;
 	
 	public NormalAppActivityMapper(ClientFactory clientFactory){
 		this.clientFactory = clientFactory;
@@ -34,50 +35,14 @@ public class NormalAppActivityMapper implements AsyncActivityMapper {
 		} 
 		else if (place instanceof HomepagePlace) {
 			HomepageActivity homepageActivity = clientFactory.getHomepageActivity();
-
-		    if (homepageActivity == null) {
-		        homepageActivity = new HomepageActivity(clientFactory, place);
-		        clientFactory.setHomePageActivity(homepageActivity);
-		    } 
-//		    homepageActivity.setPlace(place); // Nếu bạn cần cập nhật place mới
-//	        homepageActivity.loadData();  // xóa đi để trogn homepage load thì sẽ ko bị lặp 2 lần nữa 
-
 		    activityCallbackHandler.onRecieveActivity(homepageActivity);
-		
 		}
 		else if (place instanceof AddUpdateContactPlace2) {
-            AddUpdateContactPlace2 addUpdatePlace = (AddUpdateContactPlace2) place;
-            AddUpdateContactActivity2 addUpdateActivity = clientFactory.getAddUpdateContactActivity2();
-            if (addUpdateActivity == null) {
-                addUpdateActivity = new AddUpdateContactActivity2(
-                    clientFactory, place, addUpdatePlace.getActionType());
-                clientFactory.setAddUpdateContactActivity2(addUpdateActivity);
-                GWT.log("Created new AddUpdateContactActivity2 instance");
-            } else {
-                // Cập nhật dữ liệu cho instance hiện có
-            	addUpdateActivity.setPlace(place);
-                addUpdateActivity.setActionType(addUpdatePlace.getActionType());
-                String phone = addUpdatePlace.getPhoneNumber();
-                addUpdateActivity.setSelectedContact((phone != null) ? ContactInfoCache.getByPhoneNumber(phone) : null);
-                addUpdateActivity.loadData();
-                GWT.log("Reusing AddUpdateContactActivity2 instance");
-            }
-            activityCallbackHandler.onRecieveActivity(addUpdateActivity);
+		    AddUpdateContactActivity2 addUpdateContactActivity2 =  new AddUpdateContactActivity2(clientFactory, place);
+		    activityCallbackHandler.onRecieveActivity(addUpdateContactActivity2);
         }
 		else if (place instanceof DeleteContactPlace2) {
-            DeleteContactPlace2 deletePlace = (DeleteContactPlace2) place;
-            DeleteContactActivity2 deleteActivity = clientFactory.getDeleteContactActivity2();
-            if (deleteActivity == null) {
-                deleteActivity = new DeleteContactActivity2(
-                    clientFactory, deletePlace);
-                clientFactory.setDeleteContactActivity2(deleteActivity);
-                GWT.log("Created new DeleteContactActivity2 instance");
-            } else {
-                // Cập nhật dữ liệu cho instance hiện có
-                deleteActivity.setSelectedPhoneNumbers(deletePlace.getPhoneNumbers()) ;
-                deleteActivity.start(null, null); // Gọi start để cập nhật UI
-                GWT.log("Reusing DeleteContactActivity2 instance");
-            }
+            DeleteContactActivity2 deleteActivity = new DeleteContactActivity2(clientFactory, place);
             activityCallbackHandler.onRecieveActivity(deleteActivity);
         }
 	}

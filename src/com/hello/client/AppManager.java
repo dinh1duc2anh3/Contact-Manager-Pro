@@ -40,7 +40,7 @@ public class AppManager implements EntryPoint {
 		final PlaceHistoryMapper myHistoryMapper = GWT.create(MyPlaceHistoryMapper.class);
 		PlaceHistoryMapper historyMapper = new AppPlaceHistoryMapper(myHistoryMapper);
 		final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
-		historyHandler.register(CLIENT_FACTORY.getPlaceController(), CLIENT_FACTORY.getEventBus(), new HomepagePlace());
+		historyHandler.register(CLIENT_FACTORY.getPlaceController(), CLIENT_FACTORY.getEventBus(), CLIENT_FACTORY.getHomepagePlace());
 		historyHandler.handleCurrentHistory();
 	}
 

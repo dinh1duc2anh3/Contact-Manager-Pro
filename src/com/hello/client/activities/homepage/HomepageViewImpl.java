@@ -33,7 +33,6 @@ import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.hello.client.activities.addupdate2.AddUpdateContactPlace2;
-import com.hello.client.activities.addupdateDialog.AddUpdateContactActivity;
 import com.hello.client.events.EditContactEvent;
 import com.hello.shared.enums.ActionType;
 import com.hello.shared.enums.Address;
